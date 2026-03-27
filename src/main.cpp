@@ -1,5 +1,4 @@
 #include "autonomous.h"
-#include "basic/block-path.h"
 #include "basic/robot-config.h"
 #include "debug.h"
 #include "driver-control.h"
@@ -26,7 +25,6 @@ int main() {
     thread TUpdateUI(updateUI);
     thread TUpdateChassis(updateChassis);
     thread TUpdatePosition(updatePosition);
-    thread TUpdateBlockPath(updateBlockPath);
     thread TDebug(debugControl);
 
     Competition.drivercontrol(driverControl);

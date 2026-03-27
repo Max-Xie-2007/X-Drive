@@ -5,125 +5,18 @@ using namespace vex;
 brain Brain;
 controller Controller;
 
-#ifdef ROBOT_WHITE
 inertial Inertial(PORT7, vex::left); // set to left for CCW-Positive
-#ifdef POSITION_ORTHOGONAL
 rotation Rotation_L = rotation(PORT1, true);
-rotation Rotation_R = rotation(PORT9, false);
+rotation Rotation_R = rotation(PORT2, true);
+
 Orthogonal myPosition(Rotation_L, Rotation_R, Inertial);
-#endif // POSITION_ORTHOGONAL
 
-optical Optical_Exit = optical(PORT13);
-vex::distance Distance_Entrance = vex::distance(PORT21);
-vex::distance Distance_Exit = vex::distance(PORT20);
+motor Motor_Base_LF = motor(PORT9, ratio6_1, false);
+motor Motor_Base_LB = motor(PORT17, ratio6_1, false);
+motor Motor_Base_RB = motor(PORT6, ratio6_1, false);
+motor Motor_Base_RF = motor(PORT16, ratio6_1, false);
 
-digital_out Piston_Load = digital_out(Brain.ThreeWirePort.H);
-digital_out Piston_Shooter = digital_out(Brain.ThreeWirePort.E);
-digital_out Piston_Hook = digital_out(Brain.ThreeWirePort.D);
-
-motor Motor_Intaker1 = motor(PORT10, ratio36_1, false);
-motor Motor_Intaker2 = motor(PORT11, ratio36_1, true);
-motor_group Motors_Intaker = motor_group(Motor_Intaker1, Motor_Intaker2);
-motor Motor_Roller = motor(PORT8, ratio36_1, true);
-motor Motor_Shooter = motor(PORT16, ratio36_1, false);
-
-#ifdef XDRIVE
-motor Motor_Base_LFU = motor(PORT9, ratio6_1, false);
-motor Motor_Base_LFD = motor(PORT7, ratio6_1, true);
-motor Motor_Base_LBU = motor(PORT17, ratio6_1, false);
-motor Motor_Base_LBD = motor(PORT10, ratio6_1, true);
-motor Motor_Base_RBU = motor(PORT6, ratio6_1, false);
-motor Motor_Base_RBD = motor(PORT8, ratio6_1, true);
-motor Motor_Base_RFU = motor(PORT16, ratio6_1, false);
-motor Motor_Base_RFD = motor(PORT14, ratio6_1, true);
-
-motor_group Motors_Base_LF = motor_group(Motor_Base_LFU, Motor_Base_LFD);
-motor_group Motors_Base_LB = motor_group(Motor_Base_LBU, Motor_Base_LBD);
-motor_group Motors_Base_RF = motor_group(Motor_Base_RFU, Motor_Base_RFD);
-motor_group Motors_Base_RB = motor_group(Motor_Base_RBU, Motor_Base_RBD);
-
-XDrive myDrive(Motors_Base_LF, Motors_Base_LB, Motors_Base_RF, Motors_Base_RB);
-
-#endif // XDRIVE
-
-#ifdef STRAIGHT
-motor Motor_Base_L1 = motor(PORT13, ratio6_1, true);
-motor Motor_Base_L2 = motor(PORT14, ratio6_1, true);
-motor Motor_Base_L3 = motor(PORT15, ratio6_1, false);
-motor Motor_Base_L4 = motor(PORT2, ratio6_1, false); // empty
-motor Motor_Base_R1 = motor(PORT18, ratio6_1, false);
-motor Motor_Base_R2 = motor(PORT19, ratio6_1, false);
-motor Motor_Base_R3 = motor(PORT20, ratio6_1, true);
-motor Motor_Base_R4 = motor(PORT5, ratio6_1, true); // empty
-
-motor_group Motors_Base_L =
-    motor_group(Motor_Base_L1, Motor_Base_L2, Motor_Base_L3, Motor_Base_L4);
-motor_group Motors_Base_R =
-    motor_group(Motor_Base_R1, Motor_Base_R2, Motor_Base_R3, Motor_Base_R4);
-
-Straight myDrive(Motors_Base_L, Motors_Base_R);
-#endif // STRAIGHT
-#endif // ROBOT_WHITE
-
-#ifdef ROBOT_BLACK
-inertial Inertial(PORT7, vex::left); // set to left for CCW-Positive
-rotation Rotation = rotation(PORT1, true);
-
-optical Optical_Exit = optical(PORT13);
-vex::distance Distance_Entrance = vex::distance(PORT21);
-vex::distance Distance_Exit = vex::distance(PORT20);
-
-digital_out Piston_Load = digital_out(Brain.ThreeWirePort.H);
-digital_out Piston_Shooter = digital_out(Brain.ThreeWirePort.E);
-digital_out Piston_Hook = digital_out(Brain.ThreeWirePort.D);
-
-motor Motor_Intaker1 = motor(PORT10, ratio36_1, false);
-motor Motor_Intaker2 = motor(PORT11, ratio36_1, true);
-motor_group Motors_Intaker = motor_group(Motor_Intaker1, Motor_Intaker2);
-motor Motor_Roller = motor(PORT8, ratio36_1, true);
-motor Motor_Shooter = motor(PORT16, ratio36_1, false);
-
-#ifdef XDRIVE
-motor Motor_Base_LFU = motor(PORT9, ratio6_1, false);
-motor Motor_Base_LFD = motor(PORT7, ratio6_1, true);
-motor Motor_Base_LBU = motor(PORT17, ratio6_1, false);
-motor Motor_Base_LBD = motor(PORT10, ratio6_1, true);
-motor Motor_Base_RBU = motor(PORT6, ratio6_1, false);
-motor Motor_Base_RBD = motor(PORT8, ratio6_1, true);
-motor Motor_Base_RFU = motor(PORT16, ratio6_1, false);
-motor Motor_Base_RFD = motor(PORT14, ratio6_1, true);
-
-motor_group Motors_Base_LF = motor_group(Motor_Base_LFU, Motor_Base_LFD);
-motor_group Motors_Base_LB = motor_group(Motor_Base_LBU, Motor_Base_LBD);
-motor_group Motors_Base_RF = motor_group(Motor_Base_RFU, Motor_Base_RFD);
-motor_group Motors_Base_RB = motor_group(Motor_Base_RBU, Motor_Base_RBD);
-
-XDrive myDrive(Motors_Base_LF, Motors_Base_LB, Motors_Base_RF, Motors_Base_RB);
-
-#endif // XDRIVE
-
-#ifdef STRAIGHT
-motor Motor_Base_L1 = motor(PORT13, ratio6_1, true);
-motor Motor_Base_L2 = motor(PORT14, ratio6_1, true);
-motor Motor_Base_L3 = motor(PORT15, ratio6_1, false);
-motor Motor_Base_L4 = motor(PORT2, ratio6_1, false); // empty
-motor Motor_Base_R1 = motor(PORT18, ratio6_1, false);
-motor Motor_Base_R2 = motor(PORT19, ratio6_1, false);
-motor Motor_Base_R3 = motor(PORT20, ratio6_1, true);
-motor Motor_Base_R4 = motor(PORT5, ratio6_1, true); // empty
-
-motor_group Motors_Base_L =
-    motor_group(Motor_Base_L1, Motor_Base_L2, Motor_Base_L3, Motor_Base_L4);
-motor_group Motors_Base_R =
-    motor_group(Motor_Base_R1, Motor_Base_R2, Motor_Base_R3, Motor_Base_R4);
-
-Straight myDrive(Motors_Base_L, Motors_Base_R);
-#endif // STRAIGHT
-
-#ifdef POSITION_DIFFERENTIAL
-Differential myPosition(Rotation, myDrive, Inertial);
-#endif // POSITION_DIFFERENTIAL
-#endif // ROBOT_BLACK
+XDrive myDrive(Motor_Base_LF, Motor_Base_LB, Motor_Base_RF, Motor_Base_RB);
 
 bool initializing;
 void botInit() {

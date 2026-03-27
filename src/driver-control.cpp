@@ -1,5 +1,4 @@
 #include "driver-control.h"
-#include "basic/block-path.h"
 #include "basic/params.h"
 #include "basic/robot-config.h"
 #include "ui/design.h"
@@ -14,8 +13,6 @@ void driverControl() {
     while (true) {
         if (current_mode != PID_DEBUG) {
             switchRouteNColor();
-            pistonControl();
-            blockPathControl();
         }
         chassisControl();
         this_thread::sleep_for(cycle.driver);
@@ -46,48 +43,11 @@ bool bSwitchColor = false;
 bool bHook = false;
 
 void chassisControl() {
-#ifdef XDRIVE
     int lr = deadZone(JOY_CHASSIS_LR, 3);
     int fb = deadZone(JOY_CHASSIS_FB, 3);
     int rot = deadZone(JOY_CHASSIS_TURN, 3);
     // 第一人称（第三人称用setAbsDriver)
     myDrive.setRelDriver(Vector(lr, fb), 0.8 * rot);
-#endif
-#ifdef STRAIGHT
-    int fb = deadZone(JOY_CHASSIS_FB, 3);
-    int rot = deadZone(JOY_CHASSIS_TURN, 3);
-    myDrive.setDriver(fb, rot);
-#endif
-}
-
-void blockPathControl() {
-    if (BTN_INTAKE_IN) {
-        setPathEvent(INTAKE);
-    } else if (BTN_LCG) {
-        setPathEvent(LCG);
-    } else if (BTN_LG) {
-        setPathEvent(LG);
-    } else if (BTN_UCG) {
-        setPathEvent(UCG);
-    } else {
-        setPathEvent(STOP);
-    }
-}
-
-void pistonControl() {
-    if (BTN_HOOK) {
-        if (!bHook) {
-            Piston_Hook.set(!Piston_Hook.value());
-        }
-    } else {
-        bHook = false;
-    }
-
-    if (BTN_LOAD) {
-        Piston_Load.set(true);
-    } else {
-        Piston_Load.set(false);
-    }
 }
 
 void switchRouteNColor() {

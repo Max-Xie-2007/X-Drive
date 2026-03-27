@@ -21,28 +21,7 @@
 
 #define repeat(iterations) for (int iterator = 0; iterator < iterations; iterator++)
 
-/************* ROBOT DEFINITION *************/
-
-#define ROBOT_WHITE
-// #define ROBOT_BLACK
-
-/********************************************/
-
-#ifdef ROBOT_WHITE
-// #define STRAIGHT
-#define XDRIVE
-// #define POSITION_DIFFERENTIAL
-#define POSITION_ORTHOGONAL
 #define LEFT
-#endif // ROBOT_WHITE
-
-#ifdef ROBOT_BLACK
-// #define XDRIVE
-#define STRAIGHT
-#define POSITION_DIFFERENTIAL
-// #define POSITION_ORTHOGONAL
-#define RIGHT
-#endif // ROBOT_BLACK
 
 #ifdef LEFT
 enum Route { L1, L2, L3, SKILLS };
@@ -54,7 +33,6 @@ extern std::string auto_route_name[4];
 
 enum Color { RED, BLUE };
 enum Mode { COMPETITION, PID_DEBUG, ROUTE_DEBUG };
-enum PathEvent { STOP, INTAKE, LCG, UCG, LG, EXPANSION };
 
 extern Mode current_mode;
 extern Route current_route;

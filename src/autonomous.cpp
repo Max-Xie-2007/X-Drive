@@ -1,6 +1,5 @@
 #include "autonomous.h"
 #include "auto-functions/motion.h"
-#include "auto-functions/scoring.h"
 #include "basic/robot-config.h"
 #include "basic/positioning.h"
 
@@ -10,7 +9,7 @@ void autonomous() {
     myDrive.setImportantFactor(ROT);
     myDrive.setBrakeType(hold);
     switch (current_route) {
-#ifdef ROBOT_WHITE
+#ifdef LEFT
         case L1:
             autoL1();
             break;
@@ -21,7 +20,7 @@ void autonomous() {
             autoL3();
             break;
 #endif
-#ifdef ROBOT_BLACK
+#ifdef RIGHT
         case R1:
             autoR1();
             break;
