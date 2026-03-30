@@ -26,19 +26,19 @@
 
 ### `motion.cpp` 变量命名补充
 
-- 目标状态统一使用 `target_*` 前缀，例如：`target_pos`、`target_heading`、`target_distance`
-- 当前状态统一使用 `current_*` 前缀，例如：`current_pos`、`current_heading`、`current_distance`
-- 误差统一使用 `*_error` 后缀，例如：`position_error`、`heading_error`、`distance_error`
-- 路径相关误差统一使用 `path_error`
+- 目标状态统一使用 `target_*` 前缀，例如：`target_position`、`target_heading`
+- 当前状态统一使用 `current_*` 前缀，例如：`current_position`、`current_heading`
+- 误差统一使用 `*_error` 后缀，例如：`translational_error`、`angular_error`
+- 路径相关误差统一使用 `distance_error`
 - 相对朝向偏移统一使用 `heading_offset`
 - 终点目标朝向统一使用 `terminal_target_heading`
 
 ### 日志命名补充
 
 - 终端输出字段名必须与代码变量语义一致
-- 推荐输出键名：`target_pos`、`target_heading`、`target_distance`、`current_pos`、`current_heading`、`current_distance`、`elapsed_time`
+- 推荐输出键名：`target_position`、`target_heading`、`current_position`、`current_heading`、`elapsed_time`
 - 若改动变量命名，需同步修改对应日志文本，保持代码与日志一致
 
 ## 其他事项
 
-- 使用常量时从`params.h`中调用，不要直接写数字（尤其是线程刷新），除非自动路线临时修改`Config`项
+- 使用常量时从`params.h`中调用，不要直接写数字（尤其是线程刷新）
