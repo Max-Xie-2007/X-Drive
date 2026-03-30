@@ -1,7 +1,7 @@
 #include "autonomous.h"
 #include "auto-functions/motion.h"
-#include "basic/robot-config.h"
-#include "basic/positioning.h"
+#include "robot-config.h"
+#include "chassis/positioning.h"
 
 void autonomous() {
     timer auton_timer;

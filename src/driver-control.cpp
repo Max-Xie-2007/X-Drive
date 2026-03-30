@@ -1,7 +1,7 @@
 #include "driver-control.h"
-#include "basic/params.h"
-#include "basic/robot-config.h"
-#include "ui/design.h"
+#include "utils/params.h"
+#include "robot-config.h"
+#include "ui/ui-design.h"
 #include "utils/calc.h"
 #include "vex.h"
 #include <iostream>

@@ -1,7 +1,7 @@
 #ifndef UI_BASE_H
 #define UI_BASE_H
 
-#include "basic/robot-config.h"
+#include "robot-config.h"
 #include "vex.h"
 #include <functional>
 #include <string>

@@ -1,7 +1,7 @@
 #include "utils/pid.h"
-#include "basic/params.h"
-#include "ui/design.h"
+#include "ui/ui-design.h"
 #include "utils/calc.h"
+#include "utils/params.h"
 
 PID1D::PID1D(const PIDParam& param) : PIDParam(param) {}
 void PID1D::setParam(const PIDParam& param) {
@@ -10,6 +10,7 @@ void PID1D::setParam(const PIDParam& param) {
     kD_ = param.kD_;
     I_th_ = param.I_th_;
     I_max_ = param.I_max_;
+    sign_flip_clear_ = param.sign_flip_clear_;
 }
 void PID1D::setCoeff(double kP, double kI, double kD) {
     kP_ = kP;
@@ -33,7 +34,7 @@ void PID1D::update(double err_crt) {
     err_crt_ = err_crt;
     err_int_ += err_crt_ * dt_;
     // 若未足够接近目标或产生过冲则清零积分项
-    if ((clear_I_ && err_int_ * err_crt_ <= 0) || fabs(err_crt_) > I_th_) {
+    if ((sign_flip_clear_ && err_int_ * err_crt_ <= 0) || fabs(err_crt_) > I_th_) {
         err_int_ = 0;
     }
     err_dvt_ = (dt_ ? (err_crt_ - err_prev_) / dt_ : 0);
@@ -42,15 +43,6 @@ void PID1D::update(double err_crt) {
     I_ = sat(err_int_ * kI_, I_max_);
     D_ = err_dvt_ * kD_;
     output_ = P_ + I_ + D_;
-
-    if (fabs(err_crt_) < err_tol_ && fabs(err_dvt_) < dvt_tol_) {
-        if (jump_timer_.time() > jump_time_) {
-            reached_ = true;
-        }
-    } else {
-        jump_timer_.reset();
-        reached_ = false;
-    }
 
     last_time_ = track_timer_.time();
     err_prev_ = err_crt_;
@@ -61,7 +53,6 @@ void PID1D::reset() {
     err_int_ = 0;
     err_dvt_ = 0;
     first_update_ = true;
-    reached_ = false;
     track_timer_.reset();
 }
 
@@ -72,6 +63,7 @@ void PID2D::setParam(const PIDParam& param) {
     kD_ = param.kD_;
     I_th_ = param.I_th_;
     I_max_ = param.I_max_;
+    sign_flip_clear_ = param.sign_flip_clear_;
 }
 void PID2D::setCoeff(double kP, double kI, double kD) {
     kP_ = kP;
@@ -93,7 +85,7 @@ void PID2D::update(const Vector& err_crt) {
     err_crt_ = err_crt;
     err_int_ = err_int_ + err_crt_ * dt_;
     // 若未足够接近目标或产生过冲（积分向量与误差向量夹角为钝角）则清零积分向量项
-    if ((clear_I_ && err_int_.dot(err_crt_) < 0) || err_crt_.len() > I_th_) {
+    if ((sign_flip_clear_ && err_int_.dot(err_crt_) < 0) || err_crt_.len() > I_th_) {
         err_int_ = 0;
     }
     err_dvt_ = (dt_ ? (err_crt_ - err_prev_) / dt_ : Vector(0, 0));
@@ -102,15 +94,6 @@ void PID2D::update(const Vector& err_crt) {
     I_ = sat(err_int_ * kI_, I_max_);
     D_ = err_dvt_ * kD_;
     output_ = P_ + I_ + D_;
-
-    if (err_crt_.len() < err_tol_ && err_dvt_.len() < dvt_tol_) {
-        if (jump_timer_.time() > jump_time_) {
-            reached_ = true;
-        }
-    } else {
-        jump_timer_.reset();
-        reached_ = false;
-    }
 
     last_time_ = track_timer_.time();
     err_prev_ = err_crt_;
@@ -121,6 +104,5 @@ void PID2D::reset() {
     err_int_ = 0;
     err_dvt_ = 0;
     first_update_ = true;
-    reached_ = false;
     track_timer_.reset();
 }

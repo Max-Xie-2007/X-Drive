@@ -1,5 +1,5 @@
-#include "ui/base.h"
-#include "ui/design.h"
+#include "ui/ui-base.h"
+#include "ui/ui-design.h"
 #include <iomanip>
 #include <sstream>
 #include <string>

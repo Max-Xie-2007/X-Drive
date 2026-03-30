@@ -1,7 +1,7 @@
 #ifndef UI_DESIGN_H
 #define UI_DESIGN_H
 
-#include "ui/base.h"
+#include "ui/ui-base.h"
 
 void clearController();
 void clearBrain();

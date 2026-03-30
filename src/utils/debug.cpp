@@ -1,10 +1,10 @@
-#include "debug.h"
+#include "utils/debug.h"
 #include "auto-functions/motion.h"
 #include "autonomous.h"
-#include "basic/params.h"
-#include "basic/positioning.h"
-#include "basic/robot-config.h"
-#include "ui/base.h"
+#include "utils/params.h"
+#include "chassis/positioning.h"
+#include "robot-config.h"
+#include "ui/ui-base.h"
 #include "vex.h"
 using namespace vex;
 

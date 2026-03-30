@@ -21,21 +21,4 @@
 
 #define repeat(iterations) for (int iterator = 0; iterator < iterations; iterator++)
 
-#define LEFT
-
-#ifdef LEFT
-enum Route { L1, L2, L3, SKILLS };
-#endif
-#ifdef RIGHT
-enum Route { R1, R2, R3, SKILLS };
-#endif
-extern std::string auto_route_name[4];
-
-enum Color { RED, BLUE };
-enum Mode { COMPETITION, PID_DEBUG, ROUTE_DEBUG };
-
-extern Mode current_mode;
-extern Route current_route;
-extern Color current_color;
-
 #endif // VEX_H

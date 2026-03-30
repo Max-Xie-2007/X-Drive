@@ -1,5 +1,5 @@
-#include "basic/robot-config.h"
-#include "ui/design.h"
+#include "robot-config.h"
+#include "ui/ui-design.h"
 using namespace vex;
 
 brain Brain;

@@ -1,8 +1,9 @@
 #ifndef ROBOT_CONFIG_H
 #define ROBOT_CONFIG_H
 
-#include "basic/driving.h"
-#include "basic/positioning.h"
+#include "chassis/driving.h"
+#include "chassis/positioning.h"
+#include "globals.h"
 #include "vex.h"
 #include <vector>
 
