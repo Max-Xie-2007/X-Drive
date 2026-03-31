@@ -1,6 +1,5 @@
 #include "utils/calc.h"
 #include <cmath>
-#include <stdlib.h>
 
 int sgn(const double& val) { return (val > 0) - (val < 0); }
 

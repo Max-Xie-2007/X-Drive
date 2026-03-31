@@ -3,13 +3,13 @@
 
 #include "utils/exit-condition.h"
 #include "utils/pid.h"
-#include "vex.h"
+#include <cmath>
 
 struct Cycle {
-    const short auton = 5;    // 自动刷新时间(ms)
-    const short position = 5; // 定位刷新时间(ms)
-    const short driver = 20;  // 遥控刷新时间(ms)
-    const short ui_update = 100;     // ui刷新时间(ms)
+    const short auton = 5;       // 自动刷新时间(ms)
+    const short position = 5;    // 定位刷新时间(ms)
+    const short driver = 20;     // 遥控刷新时间(ms)
+    const short ui_update = 100; // ui刷新时间(ms)
 };
 extern const Cycle cycle;
 

@@ -2,7 +2,6 @@
 #define POSITIONING_H
 
 #include "utils/calc.h"
-#include "utils/geometry.h"
 #include "vex.h"
 using namespace vex;
 

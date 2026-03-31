@@ -1,8 +1,6 @@
-#include "utils/calc.h"
 #include "utils/geometry.h"
+#include "utils/calc.h"
 #include <cmath>
-#include <iostream>
-#include <stdlib.h>
 
 double disBetween(const Point& start, const Point& end) {
     return sqrt((start.x_ - end.x_) * (start.x_ - end.x_) +

@@ -2,7 +2,6 @@
 #include "ui/ui-design.h"
 #include <iomanip>
 #include <sstream>
-#include <string>
 
 std::string float_to_string(double num, int decimal_digits) {
     std::stringstream ss;

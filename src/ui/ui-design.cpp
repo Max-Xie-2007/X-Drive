@@ -1,8 +1,5 @@
 #include "ui/ui-design.h"
-#include "globals.h"
-#include "utils/pid.h"
-#include <algorithm>
-#include <cmath>
+#include "utils/params.h"
 #include <cstdio>
 
 static PIDParam* selectedTranslationalPid() {
@@ -228,8 +225,8 @@ void displayInfo() {
 void displayParams() {
     btn_profile_reach.render(black, black,
                              current_param_profile == PROFILE_REACH ? green : white);
-    btn_profile_trace.render(
-        black, black, current_param_profile == PROFILE_TRACE ? green : white);
+    btn_profile_trace.render(black, black,
+                             current_param_profile == PROFILE_TRACE ? green : white);
 
     lbl_translational.render();
     lbl_angular.render();

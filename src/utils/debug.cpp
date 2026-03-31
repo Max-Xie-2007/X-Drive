@@ -1,11 +1,8 @@
 #include "utils/debug.h"
 #include "auto-functions/motion.h"
 #include "autonomous.h"
-#include "utils/params.h"
-#include "chassis/positioning.h"
 #include "robot-config.h"
-#include "ui/ui-base.h"
-#include "vex.h"
+#include "utils/params.h"
 using namespace vex;
 
 /*********************** 调试键位表 ***********************/

@@ -3,7 +3,6 @@
 
 #include "utils/calc.h"
 #include "vex.h"
-#include <cmath>
 
 /**
  * @brief 退出条件类，用于判断运动是否达到预期目标以停止运动
@@ -61,7 +60,7 @@ class ExitCondition2D : public ExitConditionOptions {
      * @param init_err_vec 初始误差向量（目标 - 实际），用于判断过冲
      */
     void reset(Vector init_err_vec = Vector());
-     /**
+    /**
      * @brief 判断是否满足退出条件
      * @param err_vec 当前误差向量（目标 - 实际）
      * @param dvt_vec 当前误差变化率向量（/ms）
@@ -71,6 +70,5 @@ class ExitCondition2D : public ExitConditionOptions {
     void update(Vector err_vec = Vector(), Vector dvt_vec = Vector());
     bool reached() const { return reached_; }
 };
-
 
 #endif // EXIT_CONDITION_H

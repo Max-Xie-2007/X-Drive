@@ -3,8 +3,6 @@
 #include "ui/ui-design.h"
 #include "utils/calc.h"
 #include "utils/params.h"
-#include "vex.h"
-#include <iostream>
 
 void driverControl() {
     myDrive.setBrakeType(coast);

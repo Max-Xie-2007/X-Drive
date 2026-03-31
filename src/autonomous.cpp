@@ -1,6 +1,5 @@
 #include "autonomous.h"
 #include "auto-functions/motion.h"
-#include "chassis/positioning.h"
 #include "robot-config.h"
 
 void autonomous() {

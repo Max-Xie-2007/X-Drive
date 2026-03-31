@@ -1,9 +1,8 @@
 #include "autonomous.h"
-#include "robot-config.h"
-#include "utils/debug.h"
 #include "driver-control.h"
+#include "robot-config.h"
 #include "ui/ui-design.h"
-#include "vex.h"
+#include "utils/debug.h"
 #include <iostream>
 
 using namespace vex;

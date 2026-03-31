@@ -5,7 +5,6 @@
 #include "chassis/positioning.h"
 #include "globals.h"
 #include "vex.h"
-#include <vector>
 
 using namespace vex;
 using namespace std;
@@ -30,8 +29,6 @@ extern motor Motors_Base_RB[base_motor_count];
 extern XDrive myDrive;
 
 extern OrthogonalOdometry myPosition;
-extern rotation Rotation_L;
-extern rotation Rotation_R;
 
 extern bool initializing;
 /**

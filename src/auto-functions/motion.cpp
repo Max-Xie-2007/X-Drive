@@ -1,5 +1,4 @@
 #include "auto-functions/motion.h"
-#include "ui/ui-base.h"
 #include "utils/calc.h"
 #include <algorithm>
 #include <cmath>
@@ -205,7 +204,8 @@ void traceWithGlobalHeading(const T& path, double target_heading, int time_limit
         PID_deviational.update(deviational_error);
         PID_translational.update(translational_error);
         PID_angular.update(angular_error);
-        Vector translational_output = PID_translational.getOutput() + PID_deviational.getOutput();
+        Vector translational_output =
+            PID_translational.getOutput() + PID_deviational.getOutput();
         double angular_output = PID_angular.getOutput();
         if (!close) {
             translational_output = slew(translational_output, prev_translational_output,
@@ -349,7 +349,8 @@ void traceWithRelativeHeading(const T& path, double terminal_target_heading,
         PID_deviational.update(deviational_error);
         PID_translational.update(translational_error);
         PID_angular.update(angular_error);
-        Vector translational_output = PID_translational.getOutput() + PID_deviational.getOutput();
+        Vector translational_output =
+            PID_translational.getOutput() + PID_deviational.getOutput();
         double angular_output = PID_angular.getOutput();
         if (!close) {
             translational_output = slew(translational_output, prev_translational_output,
