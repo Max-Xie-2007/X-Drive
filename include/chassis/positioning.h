@@ -10,7 +10,7 @@ using namespace vex;
 void updatePosition();
 
 // 正交定位类
-struct Orthogonal {
+struct OrthogonalOdometry {
   private:
     timer position_update_timer_;
     double real_update_cycle_;
@@ -20,11 +20,12 @@ struct Orthogonal {
     rotation& rotation_right_;
     inertial& inertial_;
 
-    double left_dist_, last_left_dist_;
-    double right_dist_, last_right_dist_;
+    double left_rot_dist_, last_left_rot_dist_;
+    double right_rot_dist_, last_right_rot_dist_;
 
     double heading_unwrapped_ = 0, last_heading_unwrapped_ = 0;
     double heading_raw_ = 0, last_heading_raw_ = 0;
+    double heading_delta_int_ = 0;
     double heading_delta_ = 0;
 
     double angular_vel_, last_angular_vel_;
@@ -43,7 +44,8 @@ struct Orthogonal {
      * @param rotation_right 右定位轮
      * @param inertial 陀螺仪
      */
-    Orthogonal(rotation& rotation_left, rotation& rotation_right, inertial& inertial);
+    OrthogonalOdometry(rotation& rotation_left, rotation& rotation_right,
+                       inertial& inertial);
     /**
      * @brief 重设定位
      * @param center_pos 待设坐标
@@ -55,15 +57,13 @@ struct Orthogonal {
      */
     void update();
 
-    // getters
-
     Point getCenterPos() const { return center_pos_; }
     Point getIntersectionPos() const { return intersection_pos_; }
-    Vector getTransVel() const { return trans_vel_; }
-    double getAngularVel() const { return angular_vel_; }
+    Vector getTranslationalVelocity() const { return trans_vel_; }
+    double getAngularVelocity() const { return angular_vel_; }
 
-    double getLeftDist() const { return left_dist_; }
-    double getRightDist() const { return right_dist_; }
+    double getLeftDist() const { return left_rot_dist_; }
+    double getRightDist() const { return right_rot_dist_; }
 
     double getHeadingUnwrapped() const { return heading_unwrapped_; }
     double getHeading() const { return degNorm(heading_unwrapped_); }

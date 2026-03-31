@@ -67,6 +67,7 @@ extern ReachCfg default_reach_cfg;
  */
 struct TraceCfg {
     int max_translational_speed = 100;
+    int min_translational_speed = 0;
     int max_angular_speed = 100;
     bool if_hold = true;
     bool is_terminal = true;
@@ -80,7 +81,7 @@ extern PIDParam default_reach_translational;
 extern PIDParam default_reach_angular;
 extern PIDParam default_trace_translational;
 extern PIDParam default_trace_angular;
-extern PIDParam default_trace_return;
+extern PIDParam default_trace_deviational;
 
 extern ExitConditionOptions default_translational_ec_opt;
 extern ExitConditionOptions default_angular_ec_opt;

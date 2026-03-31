@@ -204,8 +204,9 @@ void displayInfo() {
     Brain.Screen.printAt(0, 3 * 20, "[Position] X: %.2f, Y: %.2f, H: %.2f        ",
                          pos.x_, pos.y_, myPosition.getHeading());
     Brain.Screen.printAt(0, 4 * 20, "[Velocity] Vx: %.2f, Vy: %.2f, Vh: %.2f        ",
-                         myPosition.getTransVel().dx_, myPosition.getTransVel().dy_,
-                         myPosition.getTransVel().angle());
+                         myPosition.getTranslationalVelocity().dx_,
+                         myPosition.getTranslationalVelocity().dy_,
+                         myPosition.getTranslationalVelocity().angle());
 }
 
 void displayParams() {

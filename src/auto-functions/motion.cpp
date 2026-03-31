@@ -19,12 +19,12 @@ void reach(const Point& target_position, double target_heading, int time_limit,
 
     // init variables
     Vector prev_translational_error = target_position - myPosition.getCenterPos();
-    Vector prev_translational_output = myDrive.getTranslationalVelocity();
+    Vector prev_translational_output = myPosition.getTranslationalVelocity();
     double prev_angular_error = degNorm(target_heading - myPosition.getHeading());
     if (prev_angular_error > 180) {
         prev_angular_error -= 360;
     }
-    double prev_angular_output = myDrive.getAngularVelocity();
+    double prev_angular_output = myPosition.getAngularVelocity();
     timer timeout_timer;
 
     // init PID controllers
@@ -121,29 +121,39 @@ void reach(const Point& target_position, double target_heading, int time_limit,
 template <typename T>
 void traceWithGlobalHeading(const T& path, double target_heading, int time_limit,
                             const TraceCfg& trace_cfg, const PIDParam translational_pid,
-                            const PIDParam angular_pid, const PIDParam return_pid,
+                            const PIDParam angular_pid, const PIDParam deviational_pid,
                             ExitConditionOptions translational_ec_opt,
                             ExitConditionOptions angular_ec_opt) {
     // log
     std::cout << "-------------traceWithGlobalHeading--------------" << std::endl;
     std::cout << "target_position: (" << path.end_.x_ << ", " << path.end_.y_ << ") "
               << target_heading << std::endl;
-    std::cout << "time_limit: " << trace_cfg.time_limit << std::endl;
+    std::cout << "time_limit: " << time_limit << std::endl;
 
     // init variables
-    Vector prev_translational_error = target_position - myPosition.getCenterPos();
-    Vector prev_translational_output = myDrive.getTranslationalVelocity();
+    bool close = false;
+    Vector prev_translational_error = [&]() {
+        const Circle intersection_circle(myPosition.getCenterPos(),
+                                         trace_cfg.look_ahead_dist);
+        const Point target_position = intersection_circle.findIntersection(path);
+        if (isnan(target_position.x_)) {
+            return myPosition.getCenterPos().to(path);
+        } else {
+            return target_position - myPosition.getCenterPos();
+        }
+    }();
+    Vector prev_translational_output = myPosition.getTranslationalVelocity();
     double prev_angular_error = degNorm(target_heading - myPosition.getHeading());
     if (prev_angular_error > 180) {
         prev_angular_error -= 360;
     }
-    double prev_angular_output = myDrive.getAngularVelocity();
+    double prev_angular_output = myPosition.getAngularVelocity();
     timer timeout_timer;
 
     // init PID controllers
     PID2D PID_translational(translational_pid);
     PID1D PID_angular(angular_pid);
-    PID2D PID_return(return_pid);
+    PID2D PID_deviational(deviational_pid);
 
     // set drive priority
     myDrive.setPriorFactor(TRANS);
@@ -151,150 +161,232 @@ void traceWithGlobalHeading(const T& path, double target_heading, int time_limit
     // init exit conditions
     ExitCondition2D translational_ec(translational_ec_opt);
     ExitCondition1D angular_ec(angular_ec_opt);
-    translational_ec.reset(prev_translational_error);
-    angular_ec.reset(prev_angular_error);
+    if (trace_cfg.min_translational_speed > 0) translational_ec.setExitOnOvershoot(true);
+    if (trace_cfg.look_ahead_dist < translational_ec_opt.err_tol_) {
+        // prevent look-ahead distance from being smaller than translational error
+        // tolerance, which would cause the robot to stop right at the start
+        translational_ec.setErrorTol(trace_cfg.look_ahead_dist - 0.5);
+    }
+    //
 
     // loop
-    while (timeout_timer.time(msec) < time_limit) {
-        // 计算当前位置与目标位置的误差
-        Point current_pos = myPosition.getCenterPos();
-        double current_heading = myPosition.getHeading();
-        Vector path_error = current_pos.to(path);
-        Circle intersection_circle(current_pos, trace_cfg.look_ahead_dist);
-        Point lookahead_target = intersection_circle.findIntersection(path);
-        Vector translational_error = (std::isnan(lookahead_target.x_))
-                                         ? path_error
-                                         : lookahead_target - current_pos;
-        double angular_error = degNorm(target_heading - current_heading);
+    while (timeout_timer.time(msec) < time_limit &&
+           !(translational_ec.reached() && angular_ec.reached())) {
+        // find targets
+        const Circle intersection_circle(myPosition.getCenterPos(),
+                                         trace_cfg.look_ahead_dist);
+        const Point target_position = intersection_circle.findIntersection(path);
+
+        // reset exit conditions on close state switch
+        if (!close && target_position == path.end_) {
+            close = true;
+            translational_ec.reset(prev_translational_error);
+            angular_ec.reset(prev_angular_error);
+        }
+
+        // calculate errors
+        const Vector deviational_error = myPosition.getCenterPos().to(path);
+        const Vector translational_error = [&]() {
+            if (isnan(target_position.x_)) {
+                return deviational_error;
+            } else {
+                return target_position - myPosition.getCenterPos();
+            }
+        }();
+        const Vector translational_dvt =
+            (translational_error - prev_translational_error) / cycle.auton;
+        double angular_error = degNorm(target_heading - myPosition.getHeading());
         if (angular_error > 180) {
             angular_error -= 360;
         }
+        const double angular_dvt = (angular_error - prev_angular_error) / cycle.auton;
 
-        // 计算驱动指令
+        // calculate outputs
+        PID_deviational.update(deviational_error);
         PID_translational.update(translational_error);
         PID_angular.update(angular_error);
-        PID_back.update(path_error);
-        Vector translation = PID_translational.output_;
-        double angular_output = PID_angular.output_;
-        Vector back_correction = PID_back.output_;
+        Vector translational_output = PID_translational.getOutput() + PID_deviational.getOutput();
+        double angular_output = PID_angular.getOutput();
+        if (!close) {
+            translational_output = slew(translational_output, prev_translational_output,
+                                        trace_cfg.translational_slew_rate);
+            angular_output =
+                slew(angular_output, prev_angular_output, trace_cfg.angular_slew_rate);
+        }
+        translational_output =
+            sat(translational_output, trace_cfg.max_translational_speed);
+        angular_output = sat(angular_output, trace_cfg.max_angular_speed);
+        translational_output =
+            desat(translational_output, trace_cfg.min_translational_speed);
 
-        Vector translational_output = translation + back_correction;
-        translational_output = (translational_output.len() > trace_cfg.max_speed)
-                                   ? translational_output.norm() * trace_cfg.max_speed
-                                   : translational_output;
-
-        // 执行驱动
+        // apply outputs
         myDrive.setAbsAuton(translational_output, angular_output);
 
-        // 设置跳出循环条件
-        if (trace_cfg.is_terminal) {
-            if (PID_translational.reached_ && PID_angular.reached_) {
-                break;
-            }
-        } else {
-            if (translational_error.len() < trace_cfg.look_ahead_dist) {
-                break;
-            }
-        }
+        // update exit conditions
+        translational_ec.update(translational_error, translational_dvt);
+        angular_ec.update(angular_error, angular_dvt);
 
+        // update variables
+        prev_translational_error = translational_error;
+        prev_translational_output = translational_output;
+        prev_angular_error = angular_error;
+        prev_angular_output = angular_output;
+
+        // wait for next cycle
         this_thread::sleep_for(cycle.auton);
     }
+    // stop
     if (trace_cfg.is_terminal) {
         myDrive.stop(trace_cfg.if_hold ? brakeType::hold : brakeType::coast);
     }
-    const Point real_pos = myPosition.getCenterPos();
-    std::cout << "current_pos: (" << real_pos.x_ << ", " << real_pos.y_ << ") "
-              << myPosition.getHeading() << std::endl;
+
+    // log
+    std::cout << "current_pos: (" << myPosition.getCenterPos().x_ << ", "
+              << myPosition.getCenterPos().y_ << ") " << myPosition.getHeading()
+              << std::endl;
     std::cout << "elapsed_time: " << timeout_timer.time(msec) << std::endl;
 }
 
 template <typename T>
-void traceWithRelativeHeading(const T& path, double heading_offset,
-                              double terminal_target_heading, const Config& cfg) {
-    const Config::Trace& trace_cfg = cfg.trace;
-    PID2D PID_translational(trace_cfg.PID_translational);
-    PID1D PID_angular(trace_cfg.PID_angular);
-    PID2D PID_back(trace_cfg.PID_back);
-    terminal_target_heading = degNorm(terminal_target_heading);
-    heading_offset = degNorm(heading_offset);
+void traceWithRelativeHeading(const T& path, double terminal_target_heading,
+                              double target_heading_offset, int time_limit,
+                              const TraceCfg& trace_cfg, const PIDParam translational_pid,
+                              const PIDParam angular_pid, const PIDParam deviational_pid,
+                              ExitConditionOptions translational_ec_opt,
+                              ExitConditionOptions angular_ec_opt) {
+    // log
     std::cout << "-------------traceWithRelativeHeading--------------" << std::endl;
-    std::cout << "target_position: (" << path.end_.x_ << ", " << path.end_.y_ << ") ";
-    if (trace_cfg.is_terminal) {
-        std::cout << "terminal_target_heading: " << terminal_target_heading
-                  << ", heading_offset: " << heading_offset << std::endl;
-    } else {
-        std::cout << "heading_offset: " << heading_offset << std::endl;
-    }
-    std::cout << "time_limit: " << trace_cfg.time_limit << std::endl;
-    // 初始化定时器和PID参数
-    timer timeout_timer;
-    PID_translational.setErrTol(trace_cfg.trans_tol);
-    PID_translational.setDvtTol(trace_cfg.trans_speed_tol);
-    PID_translational.setJumpTime(trace_cfg.jump_time);
-    PID_translational.reset();
-    PID_angular.setErrTol(trace_cfg.rot_tol);
-    PID_angular.setDvtTol(trace_cfg.rot_speed_tol);
-    PID_angular.setJumpTime(trace_cfg.jump_time);
-    PID_angular.reset();
-    myDrive.setPriorFactor(ANGULAR);
-    while (!trace_cfg.is_terminal || timeout_timer.time(msec) < trace_cfg.time_limit) {
-        // 计算当前位置与目标位置的误差
-        Point current_pos = myPosition.getCenterPos();
-        double current_heading = myPosition.getHeading();
-        Vector current_velocity = myPosition.getTransVel();
-        Vector path_error = current_pos.to(path);
-        Circle intersection_circle(current_pos, trace_cfg.look_ahead_dist);
-        Point lookahead_target = intersection_circle.findIntersection(path);
-        Vector translational_error = (std::isnan(lookahead_target.x_))
-                                         ? path_error
-                                         : lookahead_target - current_pos;
-        double angular_error;
-        if (translational_error.len() < trace_cfg.trans_tol) {
-            angular_error = degNorm(terminal_target_heading - current_heading);
-        } else if (current_velocity.len() < 0.004) { // 速度过慢时不调整朝向，防止震荡
-            angular_error = 0;
+    std::cout << "target_position: (" << path.end_.x_ << ", " << path.end_.y_ << ") "
+              << target_heading_offset << std::endl;
+    std::cout << "time_limit: " << time_limit << std::endl;
+
+    // init variables
+    bool close = false;
+    Vector prev_translational_error = [&]() {
+        const Circle intersection_circle(myPosition.getCenterPos(),
+                                         trace_cfg.look_ahead_dist);
+        const Point target_position = intersection_circle.findIntersection(path);
+        if (isnan(target_position.x_)) {
+            return myPosition.getCenterPos().to(path);
         } else {
-            angular_error =
-                degNorm(current_velocity.angle() + heading_offset - current_heading);
+            return target_position - myPosition.getCenterPos();
         }
+    }();
+    Vector prev_translational_output = myPosition.getTranslationalVelocity();
+    double prev_angular_error = [&]() {
+        if (myPosition.getTranslationalVelocity().len() < 1e-4) {
+            return 0;
+        } else {
+            return myPosition.getTranslationalVelocity().angle() + target_heading_offset -
+                   myPosition.getHeading();
+        }
+    }();
+    double prev_angular_output = myPosition.getAngularVelocity();
+    timer timeout_timer;
+
+    // init PID controllers
+    PID2D PID_translational(translational_pid);
+    PID1D PID_angular(angular_pid);
+    PID2D PID_deviational(deviational_pid);
+
+    // set drive priority
+    myDrive.setPriorFactor(TRANS);
+
+    // init exit conditions
+    ExitCondition2D translational_ec(translational_ec_opt);
+    ExitCondition1D angular_ec(angular_ec_opt);
+    if (trace_cfg.min_translational_speed > 0) translational_ec.setExitOnOvershoot(true);
+    if (trace_cfg.look_ahead_dist < translational_ec_opt.err_tol_) {
+        // prevent look-ahead distance from being smaller than translational error
+        // tolerance, which would cause the robot to stop right at the start
+        translational_ec.setErrorTol(trace_cfg.look_ahead_dist - 0.5);
+    }
+    //
+
+    // loop
+    while (timeout_timer.time(msec) < time_limit &&
+           !(translational_ec.reached() && angular_ec.reached())) {
+        // find targets
+        const Circle intersection_circle(myPosition.getCenterPos(),
+                                         trace_cfg.look_ahead_dist);
+        const Point target_position = intersection_circle.findIntersection(path);
+        double target_heading = [&]() {
+            if (close && !trace_cfg.is_terminal) {
+                return terminal_target_heading;
+            } else if (myPosition.getTranslationalVelocity().len() < 1e-4) {
+                return myPosition.getHeading();
+            } else {
+                return myPosition.getTranslationalVelocity().angle() +
+                       target_heading_offset;
+            }
+        }();
+
+        // reset exit conditions on close state switch
+        if (!close && target_position == path.end_) {
+            close = true;
+            translational_ec.reset(prev_translational_error);
+            angular_ec.reset(prev_angular_error);
+        }
+
+        // calculate errors
+        const Vector deviational_error = myPosition.getCenterPos().to(path);
+        const Vector translational_error = [&]() {
+            if (isnan(target_position.x_)) {
+                return deviational_error;
+            } else {
+                return target_position - myPosition.getCenterPos();
+            }
+        }();
+        const Vector translational_dvt =
+            (translational_error - prev_translational_error) / cycle.auton;
+        double angular_error = degNorm(target_heading - myPosition.getHeading());
         if (angular_error > 180) {
             angular_error -= 360;
         }
+        const double angular_dvt = (angular_error - prev_angular_error) / cycle.auton;
 
-        // 计算驱动指令
+        // calculate outputs
+        PID_deviational.update(deviational_error);
         PID_translational.update(translational_error);
         PID_angular.update(angular_error);
-        PID_back.update(path_error);
-        Vector translation = PID_translational.output_;
-        double angular_output = PID_angular.output_;
-        Vector back_correction = PID_back.output_;
+        Vector translational_output = PID_translational.getOutput() + PID_deviational.getOutput();
+        double angular_output = PID_angular.getOutput();
+        if (!close) {
+            translational_output = slew(translational_output, prev_translational_output,
+                                        trace_cfg.translational_slew_rate);
+            angular_output =
+                slew(angular_output, prev_angular_output, trace_cfg.angular_slew_rate);
+        }
+        translational_output =
+            sat(translational_output, trace_cfg.max_translational_speed);
+        angular_output = sat(angular_output, trace_cfg.max_angular_speed);
+        translational_output =
+            desat(translational_output, trace_cfg.min_translational_speed);
 
-        Vector translational_output = translation + back_correction;
-        translational_output = (translational_output.len() > trace_cfg.max_speed)
-                                   ? translational_output.norm() * trace_cfg.max_speed
-                                   : translational_output;
-
-        // 执行驱动
+        // apply outputs
         myDrive.setAbsAuton(translational_output, angular_output);
 
-        // 设置跳出循环条件
-        if (trace_cfg.is_terminal) {
-            if (PID_translational.reached_ && PID_angular.reached_) {
-                break;
-            }
-        } else {
-            if (translational_error.len() < trace_cfg.look_ahead_dist) {
-                break;
-            }
-        }
+        // update exit conditions
+        translational_ec.update(translational_error, translational_dvt);
+        angular_ec.update(angular_error, angular_dvt);
 
+        // update variables
+        prev_translational_error = translational_error;
+        prev_translational_output = translational_output;
+        prev_angular_error = angular_error;
+        prev_angular_output = angular_output;
+
+        // wait for next cycle
         this_thread::sleep_for(cycle.auton);
     }
+    // stop
     if (trace_cfg.is_terminal) {
         myDrive.stop(trace_cfg.if_hold ? brakeType::hold : brakeType::coast);
     }
-    const Point real_pos = myPosition.getCenterPos();
-    std::cout << "current_pos: (" << real_pos.x_ << ", " << real_pos.y_ << ") "
-              << myPosition.getHeading() << std::endl;
+
+    // log
+    std::cout << "current_pos: (" << myPosition.getCenterPos().x_ << ", "
+              << myPosition.getCenterPos().y_ << ") " << myPosition.getHeading()
+              << std::endl;
     std::cout << "elapsed_time: " << timeout_timer.time(msec) << std::endl;
 }

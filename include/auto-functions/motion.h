@@ -33,7 +33,7 @@ void reach(const Point& target_pos, double target_heading, int time_limit = 2000
 
 /**
  * @brief 跟踪路径并保持全局固定朝向
- * @param path 路径段（线段）
+ * @param path 路径段
  * @param target_heading 目标朝向（度，CCW-positive）
  * @param time_limit 时间限制（ms）
  * @param trace_cfg 动作配置
@@ -49,20 +49,31 @@ void traceWithGlobalHeading(
     const TraceCfg& trace_cfg = default_trace_cfg,
     const PIDParam translational_pid = default_trace_translational,
     const PIDParam angular_pid = default_trace_angular,
-    const PIDParam return_pid = default_trace_return,
+    const PIDParam deviational_pid = default_trace_deviational,
     ExitConditionOptions translational_ec_opt = default_translational_ec_opt,
     ExitConditionOptions angular_ec_opt = default_angular_ec_opt);
 
 /**
  * @brief 跟踪路径并保持相对朝向（相对于机器人速度方向）
  * @param path 路径段
- * @param heading_offset 相对角度差（度，CCW-positive）
- * @param terminal_target_heading 终点目标朝向（仅 is_terminal=true 时生效）
- * @param cfg 动作配置
+ * @param terminal_target_heading 最终目标朝向（度，CCW-positive），!is_terminal时有效
+ * @param target_heading_offset 朝向偏移（度，CCW-positive），相对于机器人速度方向的偏移
+ * @param time_limit 时间限制（ms）
+ * @param trace_cfg 动作配置
+ * @param translational_pid 平移PID参数
+ * @param angular_pid 旋转PID参数
+ * @param return_pid 反向修正PID参数
+ * @param translational_ec 平移退出条件
+ * @param angular_ec 旋转退出条件
  */
 template <typename T>
-void traceWithRelativeHeading(const T& path, double heading_offset = 0,
-                              double terminal_target_heading = 0,
-                              const Config& cfg = config);
+void traceWithRelativeHeading(
+    const T& path, double terminal_target_heading, double target_heading_offset = 0,
+    int time_limit = 2000, const TraceCfg& trace_cfg = default_trace_cfg,
+    const PIDParam translational_pid = default_trace_translational,
+    const PIDParam angular_pid = default_trace_angular,
+    const PIDParam deviational_pid = default_trace_deviational,
+    ExitConditionOptions translational_ec_opt = default_translational_ec_opt,
+    ExitConditionOptions angular_ec_opt = default_angular_ec_opt);
 
 #endif // AUTO_FUNCTIONS_MOTION_H

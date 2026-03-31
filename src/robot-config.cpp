@@ -9,7 +9,7 @@ inertial Inertial(PORT7, vex::left); // set to left for CCW-Positive
 rotation Rotation_L = rotation(PORT1, true);
 rotation Rotation_R = rotation(PORT2, true);
 
-Orthogonal myPosition(Rotation_L, Rotation_R, Inertial);
+OrthogonalOdometry myPosition(Rotation_L, Rotation_R, Inertial);
 
 motor Motor_Base_LF = motor(PORT9, ratio6_1, false);
 motor Motor_Base_LB = motor(PORT17, ratio6_1, false);

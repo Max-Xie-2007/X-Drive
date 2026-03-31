@@ -54,6 +54,7 @@ class ExitCondition2D : public ExitConditionOptions {
   public:
     explicit ExitCondition2D(const ExitConditionOptions& opt);
 
+    void setErrorTol(double err_tol) { err_tol_ = err_tol; }
     void setExitOnOvershoot(bool enabled) { exit_on_overshoot_ = enabled; }
     /**
      * @brief 重置退出条件状态，通常在开始一个新的运动时调用

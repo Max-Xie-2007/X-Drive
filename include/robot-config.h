@@ -24,7 +24,7 @@ extern motor Motor_Base_RB;
 
 extern XDrive myDrive;
 
-extern Orthogonal myPosition;
+extern OrthogonalOdometry myPosition;
 extern rotation Rotation_L;
 extern rotation Rotation_R;
 
