@@ -11,7 +11,7 @@ std::string float_to_string(double num, int decimal_digits) {
 }
 
 Interface current_interface = OPTIONS;
-ParamProfile current_param_profile = PROFILE_FWD;
+ParamProfile current_param_profile = PROFILE_REACH;
 
 void refresh() {
     clearBrain();

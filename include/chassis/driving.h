@@ -13,7 +13,11 @@ void updateChassis();
 
 class XDrive { // 菱底
   private:
-    motor motor_lf_, motor_lb_, motor_rf_, motor_rb_;
+    motor* motors_lf_;
+    motor* motors_lb_;
+    motor* motors_rf_;
+    motor* motors_rb_;
+    int motor_count_;
     // Absolute speeds
     Vector abs_auton_trans_;
     Vector abs_driver_trans_;
@@ -36,7 +40,13 @@ class XDrive { // 菱底
      * @param RF 右前电机组
      * @param RB 右后电机组
      */
-    XDrive(motor& motor_lf, motor& motor_lb, motor& motor_rf, motor& motor_rb);
+    XDrive(motor* motors_lf, motor* motors_lb, motor* motors_rf, motor* motors_rb,
+           int motor_count)
+        : motors_lf_(motors_lf), motors_lb_(motors_lb), motors_rf_(motors_rf),
+          motors_rb_(motors_rb), motor_count_(motor_count), abs_auton_trans_(0),
+          abs_driver_trans_(0), rel_auton_trans_(0), rel_driver_trans_(0),
+          auton_rot_speed_(0), driver_rot_speed_(0), current_drive_method_(VOLT),
+          current_brake_type_(coast) {}
 
     void setAbsAuton(Vector auton_trans_speed, double auton_rot_speed);
     void setAbsDriver(Vector auton_trans_speed, double driver_rot_speed);

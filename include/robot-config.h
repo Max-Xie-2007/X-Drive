@@ -17,10 +17,11 @@ extern inertial Inertial;
 extern rotation Rotation_L;
 extern rotation Rotation_R;
 
-extern motor Motor_Base_LF;
-extern motor Motor_Base_LB;
-extern motor Motor_Base_RF;
-extern motor Motor_Base_RB;
+inline constexpr int base_motor_count = 1;
+extern motor Motors_Base_LF[base_motor_count];
+extern motor Motors_Base_LB[base_motor_count];
+extern motor Motors_Base_RF[base_motor_count];
+extern motor Motors_Base_RB[base_motor_count];
 
 extern XDrive myDrive;
 

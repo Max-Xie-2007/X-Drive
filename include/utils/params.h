@@ -9,7 +9,7 @@ struct Cycle {
     const short auton = 5;    // 自动刷新时间(ms)
     const short position = 5; // 定位刷新时间(ms)
     const short driver = 20;  // 遥控刷新时间(ms)
-    const short ui = 100;     // ui刷新时间(ms)
+    const short ui_update = 100;     // ui刷新时间(ms)
 };
 extern const Cycle cycle;
 

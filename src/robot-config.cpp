@@ -11,12 +11,13 @@ rotation Rotation_R = rotation(PORT2, true);
 
 OrthogonalOdometry myPosition(Rotation_L, Rotation_R, Inertial);
 
-motor Motor_Base_LF = motor(PORT9, ratio6_1, false);
-motor Motor_Base_LB = motor(PORT17, ratio6_1, false);
-motor Motor_Base_RB = motor(PORT6, ratio6_1, false);
-motor Motor_Base_RF = motor(PORT16, ratio6_1, false);
+motor Motors_Base_LF[base_motor_count] = {motor(PORT9, ratio6_1, false)};
+motor Motors_Base_LB[base_motor_count] = {motor(PORT17, ratio6_1, false)};
+motor Motors_Base_RB[base_motor_count] = {motor(PORT6, ratio6_1, false)};
+motor Motors_Base_RF[base_motor_count] = {motor(PORT16, ratio6_1, false)};
 
-XDrive myDrive(Motor_Base_LF, Motor_Base_LB, Motor_Base_RF, Motor_Base_RB);
+XDrive myDrive(Motors_Base_LF, Motors_Base_LB, Motors_Base_RF, Motors_Base_RB,
+               base_motor_count);
 
 bool initializing;
 void botInit() {

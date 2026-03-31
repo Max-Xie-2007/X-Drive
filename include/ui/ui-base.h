@@ -1,6 +1,7 @@
 #ifndef UI_BASE_H
 #define UI_BASE_H
 
+#include "globals.h"
 #include "robot-config.h"
 #include "vex.h"
 #include <functional>
@@ -13,13 +14,7 @@ std::string float_to_string(double num, int decimal_digits = 3);
 enum Interface { OPTIONS, MOTORS, DEVICES, INFO, PARAMS };
 extern Interface current_interface;
 
-enum ParamProfile {
-    PROFILE_FWD,
-    PROFILE_TURN,
-    PROFILE_POSE_FAR,
-    PROFILE_POSE_CLOSE_BAD,
-    PROFILE_POSE_CLOSE_GOOD
-};
+enum ParamProfile { PROFILE_REACH, PROFILE_TRACE };
 extern ParamProfile current_param_profile;
 
 void refresh();

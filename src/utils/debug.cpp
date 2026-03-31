@@ -16,9 +16,6 @@ using namespace vex;
 #define BTN_DEBUG_BWD (Controller.ButtonB.pressing())
 #define BTN_DEBUG_ROTR (Controller.ButtonA.pressing())
 #define BTN_DEBUG_ROTL (Controller.ButtonY.pressing())
-#define BTN_DEBUG_POSEL (Controller.ButtonL1.pressing())
-#define BTN_DEBUG_POSER (Controller.ButtonR1.pressing())
-#define BTN_DEBUG_CONTINUOUS_POSE (Controller.ButtonDown.pressing())
 // ROUTE_DEBUG
 #define BTN_DEBUG_ROUTE (Controller.ButtonDown.pressing())
 /*********************************************************/
@@ -45,33 +42,21 @@ void chassisDebug() {
     if (BTN_DEBUG_FWD) {
         Point cur_pos = myPosition.getCenterPos();
         double cur_heading = myPosition.getHeading();
-        reach(cur_pos + Vector(0, 24), cur_heading,
-              Config{.reach = Config::Reach{.time_limit = 2000,
-                                            .PID_trans = config.reach.PID_trans,
-                                            .PID_rot = config.reach.PID_rot}});
+        reach(cur_pos + Vector(0, 24), cur_heading);
     }
     if (BTN_DEBUG_BWD) {
         Point cur_pos = myPosition.getCenterPos();
         double cur_heading = myPosition.getHeading();
-        reach(cur_pos + Vector(0, -24), cur_heading,
-              Config{.reach = Config::Reach{.time_limit = 2000,
-                                            .PID_trans = config.reach.PID_trans,
-                                            .PID_rot = config.reach.PID_rot}});
+        reach(cur_pos + Vector(0, -24), cur_heading);
     }
     if (BTN_DEBUG_ROTL) {
         Point cur_pos = myPosition.getCenterPos();
         double cur_heading = myPosition.getHeading();
-        reach(cur_pos, cur_heading + 90,
-              Config{.reach = Config::Reach{.time_limit = 2000,
-                                            .PID_trans = config.reach.PID_trans,
-                                            .PID_rot = config.reach.PID_rot}});
+        reach(cur_pos, cur_heading + 90);
     }
     if (BTN_DEBUG_ROTR) {
         Point cur_pos = myPosition.getCenterPos();
         double cur_heading = myPosition.getHeading();
-        reach(cur_pos, cur_heading - 90,
-              Config{.reach = Config::Reach{.time_limit = 2000,
-                                            .PID_trans = config.reach.PID_trans,
-                                            .PID_rot = config.reach.PID_rot}});
+        reach(cur_pos, cur_heading - 90);
     }
 }

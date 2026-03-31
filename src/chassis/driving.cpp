@@ -14,10 +14,6 @@ void updateChassis() {
     }
 }
 
-XDrive::XDrive(motor& motor_lf, motor& motor_lb, motor& motor_rf, motor& motor_rb)
-    : motor_lf_(motor_lf), motor_lb_(motor_lb), motor_rf_(motor_rf), motor_rb_(motor_rb) {
-}
-
 void XDrive::setAbsAuton(Vector auton_trans_speed, double auton_rot_speed) {
     abs_auton_trans_ = auton_trans_speed;
     auton_rot_speed_ = auton_rot_speed;
@@ -92,22 +88,29 @@ void XDrive::drive() {
     double input_RB = trans_sum.projectOn(Vector(1, 1)) + rot_sum;
 
     if (current_drive_method_ == VOLT) {
-        motor_lf_.spin(fwd, pct2volt(input_LF), volt);
-        motor_lb_.spin(fwd, pct2volt(input_LB), volt);
-        motor_rf_.spin(fwd, pct2volt(input_RF), volt);
-        motor_rb_.spin(fwd, pct2volt(input_RB), volt);
+        for (int i = 0; i < motor_count_; i++) {
+            motors_lf_[i].spin(fwd, pct2volt(input_LF), volt);
+            motors_lb_[i].spin(fwd, pct2volt(input_LB), volt);
+            motors_rf_[i].spin(fwd, pct2volt(input_RF), volt);
+            motors_rb_[i].spin(fwd, pct2volt(input_RB), volt);
+        }
     } else if (current_drive_method_ == PCT) {
-        motor_lf_.spin(fwd, input_LF, pct);
-        motor_lb_.spin(fwd, input_LB, pct);
-        motor_rf_.spin(fwd, input_RF, pct);
-        motor_rb_.spin(fwd, input_RB, pct);
+        for (int i = 0; i < motor_count_; i++) {
+            motors_lf_[i].spin(fwd, input_LF, pct);
+            motors_lb_[i].spin(fwd, input_LB, pct);
+            motors_rf_[i].spin(fwd, input_RF, pct);
+            motors_rb_[i].spin(fwd, input_RB, pct);
+        }
     }
 }
 
 void XDrive::stop(brakeType type) {
     setAbsAuton(Vector(0, 0), 0);
-    motor_lf_.stop(type);
-    motor_lb_.stop(type);
-    motor_rf_.stop(type);
-    motor_rb_.stop(type);
+    setAbsDriver(Vector(0, 0), 0);
+    for (int i = 0; i < motor_count_; i++) {
+        motors_lf_[i].stop(type);
+        motors_lb_[i].stop(type);
+        motors_rf_[i].stop(type);
+        motors_rb_[i].stop(type);
+    }
 }
