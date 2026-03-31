@@ -2,10 +2,20 @@
 #define DRIVER_CONTROL_H
 
 #include "chassis/driving.h"
+
+/**
+ * @brief 遥控阶段主循环
+ */
 void driverControl();
 
+/**
+ * @brief 挡路机构控制
+ */
 void blockPathControl();
 
+/**
+ * @brief 气动装置控制
+ */
 void pistonControl();
 
 /**

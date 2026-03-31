@@ -9,6 +9,9 @@ using namespace vex;
 enum DriveMethod { VOLT, PCT };
 enum DriveFactor { TRANS, ANGULAR, NEITHER };
 
+/**
+ * @brief 底盘控制线程函数
+ */
 void updateChassis();
 
 class XDrive { // 菱底
@@ -48,12 +51,44 @@ class XDrive { // 菱底
           auton_rot_speed_(0), driver_rot_speed_(0), current_drive_method_(VOLT),
           current_brake_type_(coast) {}
 
+    /**
+     * @brief 设置自动阶段的全局平移速度与旋转速度
+     * @param auton_trans_speed 全局平移速度向量（%）
+     * @param auton_rot_speed 旋转速度（%）
+     */
     void setAbsAuton(Vector auton_trans_speed, double auton_rot_speed);
+    /**
+     * @brief 设置遥控阶段的全局平移速度与旋转速度
+     * @param auton_trans_speed 全局平移速度向量（%）
+     * @param driver_rot_speed 旋转速度（%）
+     */
     void setAbsDriver(Vector auton_trans_speed, double driver_rot_speed);
+    /**
+     * @brief 设置自动阶段的机体坐标平移速度与旋转速度
+     * @param auton_trans_speed 机体坐标平移速度向量（%）
+     * @param auton_rot_speed 旋转速度（%）
+     */
     void setRelAuton(Vector auton_trans_speed, double auton_rot_speed);
+    /**
+     * @brief 设置遥控阶段的机体坐标平移速度与旋转速度
+     * @param auton_trans_speed 机体坐标平移速度向量（%）
+     * @param driver_rot_speed 旋转速度（%）
+     */
     void setRelDriver(Vector auton_trans_speed, double driver_rot_speed);
+    /**
+     * @brief 设置驱动方式（电压或百分比）
+     * @param method 驱动方式，VOLT 或 PCT
+     */
     void setDriveMethod(DriveMethod method = VOLT);
+    /**
+     * @brief 设置制动类型
+     * @param type 制动类型，coast / hold / brake
+     */
     void setBrakeType(brakeType type = coast);
+    /**
+     * @brief 设置驱动优先级（用于功率和超过 100% 的情况）
+     * @param factor 优先级因子（TRANS / ANGULAR / NEITHER）
+     */
     void setPriorFactor(DriveFactor factor);
 
     /**

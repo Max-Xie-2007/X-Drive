@@ -57,15 +57,43 @@ struct OrthogonalOdometry {
      */
     void update();
 
+    /**
+     * @brief 获取机器人中心位置
+     * @return 机器人中心坐标（inch, inch）
+     */
     Point getCenterPos() const { return center_pos_; }
+    /**
+     * @brief 获取机器人交点位置（定位轮所在位置）
+     * @return 机器人交点坐标（inch, inch）
+     */
     Point getIntersectionPos() const { return intersection_pos_; }
+    /**
+     * @brief 获取机器人平移速度
+     * @return 机器人平移速度（inch/ms, inch/ms）
+     */
     Vector getTranslationalVelocity() const { return trans_vel_; }
+    /**
+     * @brief 获取机器人角速度
+     * @return 机器人角速度（deg/ms）
+     */
     double getAngularVelocity() const { return angular_vel_; }
 
+    /**
+     * @brief 获取左定位轮距离增量（inch）
+     */
     double getLeftDist() const { return left_rot_dist_; }
+    /**
+     * @brief 获取右定位轮距离增量（inch）
+     */
     double getRightDist() const { return right_rot_dist_; }
 
+    /**
+     * @brief 获取绝对航向（无范围）
+     */
     double getHeadingUnwrapped() const { return heading_unwrapped_; }
+    /**
+     * @brief 获取绝对航向（0..360）
+     */
     double getHeading() const { return degNorm(heading_unwrapped_); }
 };
 

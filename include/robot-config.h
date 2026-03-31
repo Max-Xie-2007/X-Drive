@@ -10,19 +10,23 @@
 using namespace vex;
 using namespace std;
 
+// Core devices
 extern brain Brain;
 extern controller Controller;
 
+// Positioning sensors
 extern inertial Inertial;
 extern rotation Rotation_L;
 extern rotation Rotation_R;
 
+// Drivetrain motors
 inline constexpr int base_motor_count = 1;
 extern motor Motors_Base_LF[base_motor_count];
 extern motor Motors_Base_LB[base_motor_count];
 extern motor Motors_Base_RF[base_motor_count];
 extern motor Motors_Base_RB[base_motor_count];
 
+// Motion systems
 extern XDrive myDrive;
 
 extern OrthogonalOdometry myPosition;
@@ -30,6 +34,9 @@ extern rotation Rotation_L;
 extern rotation Rotation_R;
 
 extern bool initializing;
+/**
+ * @brief 机器人设备初始化入口
+ */
 void botInit();
 
 #endif
