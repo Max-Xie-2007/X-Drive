@@ -1,6 +1,7 @@
 #ifndef PARAMS_H
 #define PARAMS_H
 
+#include "utils/exit-condition.h"
 #include "utils/pid.h"
 #include "vex.h"
 
@@ -31,16 +32,12 @@ struct Hardware {
 };
 extern const Hardware hardware;
 
-extern PIDParam default_reach_translational;
-extern PIDParam default_reach_angular;
-extern PIDParam default_trace_translational;
-extern PIDParam default_trace_angular;
-extern PIDParam default_trace_back;
-
 /**
  * @brief Reach配置
  * @param max_translational_speed 最大平移速度(%)
+ * @param min_translational_speed 最小平移速度(%)
  * @param max_angular_speed 最大旋转速度(%)
+ * @param min_angular_speed 最小旋转速度(%)
  * @param if_hold 到达时是否保持制动
  * @param is_terminal 是否为终点路径段
  * @param translational_slew_rate 平移速度斜坡率(%/ms)
@@ -48,7 +45,9 @@ extern PIDParam default_trace_back;
  */
 struct ReachCfg {
     int max_translational_speed = 100;
+    int min_translational_speed = 0;
     int max_angular_speed = 100;
+    int min_angular_speed = 0;
     bool if_hold = true;
     bool is_terminal = true;
     float translational_slew_rate = 5.0;
@@ -76,5 +75,14 @@ struct TraceCfg {
     double look_ahead_dist = 3.0;
 };
 extern TraceCfg default_trace_cfg;
+
+extern PIDParam default_reach_translational;
+extern PIDParam default_reach_angular;
+extern PIDParam default_trace_translational;
+extern PIDParam default_trace_angular;
+extern PIDParam default_trace_return;
+
+extern ExitConditionOptions default_translational_ec_opt;
+extern ExitConditionOptions default_angular_ec_opt;
 
 #endif // PARAMS_H

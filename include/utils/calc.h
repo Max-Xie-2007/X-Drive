@@ -33,6 +33,15 @@ Vector desat(const Vector& val, const double& limit);
 double deadZone(const double& val, const double& limit);
 Vector deadZone(const Vector& val, const double& limit);
 /**
+ * @brief 平滑函数
+ * @param val 输入值
+ * @param prev_val 前一个输入值
+ * @param slew_rate 最大变化率（单位：每周期的最大增量）
+ * @return 平滑后的值
+ */
+double slew(const double& val, const double& prev_val, const double& slew_rate);
+Vector slew(const Vector& val, const Vector& prev_val, const double& slew_rate);
+/**
  * @brief 英寸转厘米
  * @param inch 英寸值
  * @return 厘米值

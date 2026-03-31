@@ -1,3 +1,68 @@
-#pragma once
+#ifndef AUTO_FUNCTIONS_MOTION_H
+#define AUTO_FUNCTIONS_MOTION_H
 
-#include "auto-functions/motion/motion.h"
+#include "chassis/driving.h"
+#include "chassis/positioning.h"
+#include "robot-config.h"
+#include "utils/exit-condition.h"
+#include "utils/pid.h"
+#include "vex.h"
+#include <vector>
+
+using namespace vex;
+
+/********************** CHASSIS CONTROL **********************/
+
+/**
+ * @brief 移动机器人到目标位置并调整朝向
+ * @param target_pos 目标位置（全局坐标系）
+ * @param target_heading 目标朝向（度，CCW-positive）
+ * @param time_limit 时间限制（ms）
+ * @param reach_cfg 动作配置
+ * @param translational_pid 平移PID参数
+ * @param angular_pid 旋转PID参数
+ * @param translational_ec 平移退出条件
+ * @param angular_ec 旋转退出条件
+ */
+void reach(const Point& target_pos, double target_heading, int time_limit = 2000,
+           const ReachCfg& reach_cfg = default_reach_cfg,
+           const PIDParam translational_pid = default_reach_translational,
+           const PIDParam angular_pid = default_reach_angular,
+           ExitConditionOptions translational_ec = default_translational_ec_opt,
+           ExitConditionOptions angular_ec = default_angular_ec_opt);
+
+/**
+ * @brief 跟踪路径并保持全局固定朝向
+ * @param path 路径段（线段）
+ * @param target_heading 目标朝向（度，CCW-positive）
+ * @param time_limit 时间限制（ms）
+ * @param trace_cfg 动作配置
+ * @param translational_pid 平移PID参数
+ * @param angular_pid 旋转PID参数
+ * @param return_pid 反向修正PID参数
+ * @param translational_ec 平移退出条件
+ * @param angular_ec 旋转退出条件
+ */
+template <typename T>
+void traceWithGlobalHeading(
+    const T& path, double target_heading, int time_limit = 2000,
+    const TraceCfg& trace_cfg = default_trace_cfg,
+    const PIDParam translational_pid = default_trace_translational,
+    const PIDParam angular_pid = default_trace_angular,
+    const PIDParam return_pid = default_trace_return,
+    ExitConditionOptions translational_ec_opt = default_translational_ec_opt,
+    ExitConditionOptions angular_ec_opt = default_angular_ec_opt);
+
+/**
+ * @brief 跟踪路径并保持相对朝向（相对于机器人速度方向）
+ * @param path 路径段
+ * @param heading_offset 相对角度差（度，CCW-positive）
+ * @param terminal_target_heading 终点目标朝向（仅 is_terminal=true 时生效）
+ * @param cfg 动作配置
+ */
+template <typename T>
+void traceWithRelativeHeading(const T& path, double heading_offset = 0,
+                              double terminal_target_heading = 0,
+                              const Config& cfg = config);
+
+#endif // AUTO_FUNCTIONS_MOTION_H

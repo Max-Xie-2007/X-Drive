@@ -42,6 +42,20 @@ Vector deadZone(const Vector& val, const double& limit) {
     else
         return val;
 }
+double slew(const double& val, const double& prev_val, const double& slew_rate) {
+    double delta = val - prev_val;
+    if (std::abs(delta) > slew_rate)
+        return prev_val + sgn(delta) * slew_rate;
+    else
+        return val;
+}
+Vector slew(const Vector& val, const Vector& prev_val, const double& slew_rate) {
+    Vector delta = val - prev_val;
+    if (delta.len() > slew_rate)
+        return prev_val + delta.norm() * slew_rate;
+    else
+        return val;
+}
 
 double inch2cm(const double& inch) { return inch * 2.54; }
 double cm2inch(const double& cm) { return cm / 2.54; }

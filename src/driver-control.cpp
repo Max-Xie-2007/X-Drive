@@ -1,15 +1,15 @@
 #include "driver-control.h"
-#include "utils/params.h"
 #include "robot-config.h"
 #include "ui/ui-design.h"
 #include "utils/calc.h"
+#include "utils/params.h"
 #include "vex.h"
 #include <iostream>
 
 void driverControl() {
     myDrive.setBrakeType(coast);
     myDrive.setDriveMethod(VOLT);
-    myDrive.setImportantFactor(NEITHER);
+    myDrive.setPriorFactor(NEITHER);
     while (true) {
         if (current_mode != PID_DEBUG) {
             switchRouteNColor();

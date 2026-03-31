@@ -1,12 +1,12 @@
 #include "autonomous.h"
 #include "auto-functions/motion.h"
-#include "robot-config.h"
 #include "chassis/positioning.h"
+#include "robot-config.h"
 
 void autonomous() {
     timer auton_timer;
     myDrive.setDriveMethod(VOLT);
-    myDrive.setImportantFactor(ROT);
+    myDrive.setPriorFactor(ANGULAR);
     myDrive.setBrakeType(hold);
     switch (current_route) {
 #ifdef LEFT

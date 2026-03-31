@@ -14,10 +14,9 @@ void updateChassis() {
     }
 }
 
-XDrive::XDrive(motor& motor_lf, motor& motor_lb, motor& motor_rf,
-               motor& motor_rb)
-    : motor_lf_(motor_lf), motor_lb_(motor_lb), motor_rf_(motor_rf),
-      motor_rb_(motor_rb) {}
+XDrive::XDrive(motor& motor_lf, motor& motor_lb, motor& motor_rf, motor& motor_rb)
+    : motor_lf_(motor_lf), motor_lb_(motor_lb), motor_rf_(motor_rf), motor_rb_(motor_rb) {
+}
 
 void XDrive::setAbsAuton(Vector auton_trans_speed, double auton_rot_speed) {
     abs_auton_trans_ = auton_trans_speed;
@@ -41,7 +40,7 @@ void XDrive::setRelDriver(Vector driver_trans_speed, double driver_rot_speed) {
 }
 void XDrive::setDriveMethod(DriveMethod method) { current_drive_method_ = method; }
 void XDrive::setBrakeType(brakeType type) { current_brake_type_ = type; }
-void XDrive::setImportantFactor(DriveFactor factor) { important_factor_ = factor; }
+void XDrive::setPriorFactor(DriveFactor factor) { important_factor_ = factor; }
 
 void XDrive::drive() {
     Vector trans_sum = rel_auton_trans_ + rel_driver_trans_;
@@ -73,7 +72,7 @@ void XDrive::drive() {
                 }
             }
             break;
-        case ROT:
+        case ANGULAR:
             if (max_input_raw > 100) {
                 // Keep rotation as-is, shrink translation to the remaining headroom.
                 if (max_trans > 1e-6) {

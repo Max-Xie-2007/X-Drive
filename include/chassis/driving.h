@@ -1,13 +1,13 @@
 #ifndef DRIVING_H
 #define DRIVING_H
-#include "utils/params.h"
 #include "utils/geometry.h"
+#include "utils/params.h"
 #include "vex.h"
 
 using namespace vex;
 
 enum DriveMethod { VOLT, PCT };
-enum DriveFactor { TRANS, ROT, NEITHER };
+enum DriveFactor { TRANS, ANGULAR, NEITHER };
 
 void updateChassis();
 
@@ -44,7 +44,7 @@ class XDrive { // 菱底
     void setRelDriver(Vector auton_trans_speed, double driver_rot_speed);
     void setDriveMethod(DriveMethod method = VOLT);
     void setBrakeType(brakeType type = coast);
-    void setImportantFactor(DriveFactor factor);
+    void setPriorFactor(DriveFactor factor);
 
     /**
      * @brief 设置机器人的驱动
