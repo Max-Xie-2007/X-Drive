@@ -19,10 +19,10 @@ struct OrthogonalOdometry {
     rotation& rotation_right_;
     inertial& inertial_;
 
-    double left_rot_dist_, last_left_rot_dist_;
-    double right_rot_dist_, last_right_rot_dist_;
+    double left_rot_dist_, prev_left_rot_dist_;
+    double right_rot_dist_, prev_right_rot_dist_;
 
-    double heading_unwrapped_ = 0, last_heading_unwrapped_ = 0;
+    double heading_unwrapped_ = 0, prev_heading_unwrapped_ = 0;
     double heading_raw_ = 0, last_heading_raw_ = 0;
     double heading_delta_int_ = 0;
     double heading_delta_ = 0;

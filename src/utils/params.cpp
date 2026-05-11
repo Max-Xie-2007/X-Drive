@@ -5,23 +5,23 @@ const Cycle cycle = {.auton = 5,
                      .driver_control = 20,
                      .brain_ui_update = 100,
                      .controller_ui_update = 100};
-const Hardware hardware = {.odometer = {.rotation_dist_per_deg = 2 * M_PI * 1.375 / 360,
-                                        .IMU_heading_coef = 3600.0 / 3598.5,
+const Hardware hardware = {.odometer = {.rotation_dist_per_deg = 4 * 24 / 7348.97,
+                                        .IMU_heading_coef = 3600.0 / (9 * 360 + 344.42),
                                         .IMU_damping_th = 0.01,
-                                        .left_encoder_angle = acos((82.98) / (24 * 5)),
-                                        .right_encoder_angle = -acos((84.55) / (24 * 5)),
-                                        .offset = Vector(-2.6016, -0.1173)}};
+                                        .left_encoder_angle = -acos(67.9 / (24 * 4)),
+                                        .right_encoder_angle = acos(65.7 / (24 * 4)),
+                                        .offset = Vector(6.15, 0)}};
 
 ReachCfg default_reach_cfg;
 TraceCfg default_trace_cfg;
 
-PIDParam default_reach_translational = {.kP_ = 0.8,
+PIDParam default_reach_translational = {.kP_ = 4.0,
                                         .kI_ = 0.0,
                                         .kD_ = 0.0,
                                         .I_th_ = 0.0,
                                         .I_max_ = 0.0,
                                         .sign_flip_clear_ = true};
-PIDParam default_reach_angular = {.kP_ = 0.8,
+PIDParam default_reach_angular = {.kP_ = 2.0,
                                   .kI_ = 0.0,
                                   .kD_ = 0.0,
                                   .I_th_ = 0.0,

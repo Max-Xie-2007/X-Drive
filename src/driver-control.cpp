@@ -128,11 +128,12 @@ void driverControl() {
 }
 
 void chassisControl() {
-    const int forward = getCurvedOutput(A3, {});
     const int lateral = getCurvedOutput(A4, {});
+    const int forward = getCurvedOutput(A3, {});
     const int angular =
         getCurvedOutput(-A1, {.exponent = current_driver == Driver::CKS ? 1.0 : 1.012});
-    myDrive.setAbsDriver(Vector(forward, lateral), angular);
+    myDrive.setAbsDriver(Vector(lateral, forward), angular); // 第三人称
+    // myDrive.setRelDriver(Vector(lateral, forward).rotate(-90), angular); // 第一人称
 }
 
 void switchAutonControl() {

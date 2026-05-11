@@ -10,8 +10,8 @@ rotation Rotation_R = rotation(PORT6, true);
 
 OrthogonalOdometry myPosition(Rotation_L, Rotation_R, Inertial);
 
-motor Motors_Base_LF[base_motor_count] = {motor(PORT11, ratio6_1, true)};
-motor Motors_Base_LB[base_motor_count] = {motor(PORT12, ratio6_1, true)};
+motor Motors_Base_LF[base_motor_count] = {motor(PORT11, ratio6_1, false)};
+motor Motors_Base_LB[base_motor_count] = {motor(PORT12, ratio6_1, false)};
 motor Motors_Base_RF[base_motor_count] = {motor(PORT21, ratio6_1, false)};
 motor Motors_Base_RB[base_motor_count] = {motor(PORT10, ratio6_1, false)};
 

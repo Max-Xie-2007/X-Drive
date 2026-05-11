@@ -7,8 +7,8 @@ Driver current_driver = Driver::XTR;
 
 // Mode current_mode = Mode::COMPETITION;
 // Mode current_mode = Mode::PRACTICE;
-Mode current_mode = Mode::ROUTE_DEBUG;
-// Mode current_mode = Mode::PID_DEBUG;
+// Mode current_mode = Mode::ROUTE_DEBUG;
+Mode current_mode = Mode::PID_DEBUG;
 
 // Side current_side = Side::LEFT;
 Side current_side = Side::RIGHT;

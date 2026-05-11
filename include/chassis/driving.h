@@ -28,8 +28,8 @@ class XDrive { // 菱底
     Vector rel_auton_trans_;
     Vector rel_driver_trans_;
 
-    double auton_rot_speed_;
-    double driver_rot_speed_;
+    double auton_ang_;
+    double driver_ang_;
 
     DriveMethod current_drive_method_;
     brakeType current_brake_type_;
@@ -47,9 +47,8 @@ class XDrive { // 菱底
            int motor_count)
         : motors_lf_(motors_lf), motors_lb_(motors_lb), motors_rf_(motors_rf),
           motors_rb_(motors_rb), motor_count_(motor_count), abs_auton_trans_(0),
-          abs_driver_trans_(0), rel_auton_trans_(0), rel_driver_trans_(0),
-          auton_rot_speed_(0), driver_rot_speed_(0), current_drive_method_(VOLT),
-          current_brake_type_(coast) {}
+          abs_driver_trans_(0), rel_auton_trans_(0), rel_driver_trans_(0), auton_ang_(0),
+          driver_ang_(0), current_drive_method_(VOLT), current_brake_type_(coast) {}
 
     /**
      * @brief 设置自动阶段的全局平移速度与旋转速度

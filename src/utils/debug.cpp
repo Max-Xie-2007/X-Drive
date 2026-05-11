@@ -13,24 +13,34 @@ using namespace vex;
 
 void chassisDebug() {
     if (X) {
+        reach(myPosition.getCenterPos() + Vector(0, 24), 0.0);
     }
     if (B) {
+        reach(myPosition.getCenterPos() + Vector(0, -24), 0.0);
     }
     if (Y) {
+        reach(myPosition.getCenterPos() + Vector(-24, 0), 0.0);
     }
     if (A) {
-    }
-    if (Right) {
+        reach(myPosition.getCenterPos() + Vector(24, 0), 0.0);
     }
     if (Left) {
+        reach(myPosition.getCenterPos(), myPosition.getHeading() + 45.0);
+    }
+    if (Right) {
+        reach(myPosition.getCenterPos(), myPosition.getHeading() - 45.0);
     }
     if (L1) {
+        reach(myPosition.getCenterPos(), myPosition.getHeading() + 90.0);
     }
     if (R1) {
+        reach(myPosition.getCenterPos(), myPosition.getHeading() - 90.0);
     }
     if (R2) {
+        reach(myPosition.getCenterPos(), myPosition.getHeading() + 180.0);
     }
     if (L2) {
+        reach(myPosition.getCenterPos(), myPosition.getHeading() - 180.0);
     }
     if (Down) {
     }
