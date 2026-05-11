@@ -30,10 +30,4 @@ extern XDrive myDrive;
 
 extern OrthogonalOdometry myPosition;
 
-extern bool initializing;
-/**
- * @brief 机器人设备初始化入口
- */
-void botInit();
-
 #endif

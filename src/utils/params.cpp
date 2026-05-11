@@ -1,7 +1,16 @@
 #include "utils/params.h"
 
-const Cycle cycle;
-const Hardware hardware;
+const Cycle cycle = {.auton = 5,
+                     .position = 5,
+                     .driver_control = 20,
+                     .brain_ui_update = 100,
+                     .controller_ui_update = 100};
+const Hardware hardware = {.odometer = {.rotation_dist_per_deg = 2 * M_PI * 1.375 / 360,
+                                        .IMU_heading_coef = 3600.0 / 3598.5,
+                                        .IMU_damping_th = 0.01,
+                                        .left_encoder_angle = acos((82.98) / (24 * 5)),
+                                        .right_encoder_angle = -acos((84.55) / (24 * 5)),
+                                        .offset = Vector(-2.6016, -0.1173)}};
 
 ReachCfg default_reach_cfg;
 TraceCfg default_trace_cfg;

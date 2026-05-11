@@ -1,35 +1,43 @@
 #include "autonomous.h"
+#include "controller.h"
 #include "driver-control.h"
+#include "globals.h"
 #include "robot-config.h"
-#include "ui/ui-design.h"
-#include "utils/debug.h"
-#include <iostream>
 
+#include "ui/ui-brain.h"
+#include "ui/ui-controller.h"
+#include "utils/debug.h"
+#include "vex.h"
+
+#include <iostream>
 using namespace vex;
 using namespace std;
 
-competition Competition;
+competition myCompetition;
 
 int main() {
+    // competition setup
+    myCompetition.drivercontrol(driverControl);
+    myCompetition.autonomous(autonomous);
+    wait(200, msec);
+    current_stage = Stage::PRE_CALIBRATION;
+
+    thread TUpdateController(threadUpdateController);
+    thread TUpdateBrainUI(threadUpdateBrainUI);
+    thread TUpdateControllerUI(threadUpdateControllerUI);
+    thread TUpdateDriving(threadUpdateDriving);
+    thread TUpdatePosition(threadUpdatePosition);
+
+    // log
     cout << endl
-         << endl
-         << "=================== Program Start ===================" << endl
+         << "======================================================" << endl
+         << "=================== Program Starts ===================" << endl
+         << "======================================================" << endl
          << endl;
-    if (current_mode == COMPETITION) {
-        botInit();
-    } else {
-        cout << "Running in non-competition mode!" << endl << endl;
-    }
 
-    thread TUpdateUI(updateUI);
-    thread TUpdateChassis(updateChassis);
-    thread TUpdatePosition(updatePosition);
-    thread TDebug(debugControl);
+    // exit prevention
+    while (true)
+        wait(10, msec);
 
-    Competition.drivercontrol(driverControl);
-    Competition.autonomous(autonomous);
-
-    while (true) {
-        this_thread::sleep_for(10);
-    }
+    return 0;
 }

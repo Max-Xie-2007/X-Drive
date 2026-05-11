@@ -6,7 +6,7 @@
 using namespace vex;
 
 // 定位线程函数
-void updatePosition();
+void threadUpdatePosition();
 
 // 正交定位类
 struct OrthogonalOdometry {
@@ -46,11 +46,16 @@ struct OrthogonalOdometry {
     OrthogonalOdometry(rotation& rotation_left, rotation& rotation_right,
                        inertial& inertial);
     /**
-     * @brief 重设定位
+     * @brief 重设坐标和朝向
      * @param center_pos 待设坐标
      * @param heading 待设航向
      */
-    void reset(const Point& center_pos = Point(0, 0), const double& heading = 0);
+    void reset(const Point& center_pos, const double& heading);
+    /**
+     * @brief 重设坐标
+     * @param center_pos 待设坐标
+     */
+    void reset(const Point& center_pos = Point(0, 0));
     /**
      * @brief 更新机器人坐标
      */
@@ -80,20 +85,20 @@ struct OrthogonalOdometry {
     /**
      * @brief 获取左定位轮距离增量（inch）
      */
-    double getLeftDist() const { return left_rot_dist_; }
+    double getLeftRotDist() const { return left_rot_dist_; }
     /**
      * @brief 获取右定位轮距离增量（inch）
      */
-    double getRightDist() const { return right_rot_dist_; }
+    double getRightRotDist() const { return right_rot_dist_; }
 
     /**
      * @brief 获取绝对航向（无范围）
      */
-    double getHeadingUnwrapped() const { return heading_unwrapped_; }
+    double getUnwrappedHeading() const { return heading_unwrapped_; }
     /**
      * @brief 获取绝对航向（0..360）
      */
-    double getHeading() const { return degNorm(heading_unwrapped_); }
+    double getHeading() const { return degNorm360(heading_unwrapped_); }
 };
 
 #endif // POSITIONING_H

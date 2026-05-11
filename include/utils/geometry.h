@@ -20,10 +20,11 @@ double disBetween(const Point& start, const Point& end);
  * @brief 二维点类，单位为英寸
  */
 struct Point {
-    double x_;
-    double y_;
+    double x_ = 0.0;
+    double y_ = 0.0;
 
-    Point(double x = 0.0, double y = 0.0);
+    Point() = default;
+    Point(double x, double y);
 
     /**
      * @brief 点加向量
@@ -62,10 +63,26 @@ struct Point {
  * @brief 二维向量类，单位为英寸
  */
 struct Vector {
-    double dx_;
-    double dy_;
+    double dx_ = 0.0;
+    double dy_ = 0.0;
 
-    Vector(double dx = 0.0, double dy = 0.0);
+    Vector() = default;
+    /**
+     * @brief 利用角度构造单位向量
+     * @param angle 角度，单位为度，逆时针为正方向(0..360)
+     */
+    Vector(double angle);
+    /**
+     * @brief 利用分量构造向量
+     * @param dx x 分量
+     * @param dy y 分量
+     */
+    Vector(double dx, double dy);
+    /**
+     * @brief 利用两点构造向量
+     * @param start 起点
+     * @param end 终点
+     */
     Vector(const Point& start, const Point& end);
     /**
      * @brief 向量加法
@@ -104,19 +121,19 @@ struct Vector {
      */
     double len() const;
     /**
-     * @brief 向量归一化（单位向量）
+     * @brief 向量归一化(单位向量)
      * @return 归一化后的向量
      */
     Vector norm() const;
     /**
      * @brief 向量旋转
-     * @param angle 旋转角度，单位为度，逆时针为正方向（CCW-positive）
+     * @param angle 旋转角度，单位为度，逆时针为正方向(CCW-positive)
      * @return 旋转后的向量
      */
     Vector rotate(double angle) const;
     /**
      * @brief 计算向量角度
-     * @return 向量与 x 轴正方向的夹角，单位为度，逆时针为正方向（0..360）
+     * @return 向量与 x 轴正方向的夹角，单位为度，逆时针为正方向(0..360)
      */
     double angle() const;
     /**
@@ -181,7 +198,7 @@ struct Circle {
  * 起始和终止角度，x轴正方向为始边，逆时针为正方向，[0,360)
  * @param start_ 起始点
  * @param end_ 终止点
- * @param clockwise_ 是否按顺时针方向（true 表示顺时针，视角为从上方俯视）
+ * @param clockwise_ 是否按顺时针方向(true 表示顺时针，视角为从上方俯视)
  * @param large_arc_ 是否为优弧
  * @brief 圆弧类，单位为英寸
  */
@@ -198,8 +215,8 @@ struct Arc {
      * @param r_ 半径
      * @param start_ 起始点
      * @param end_ 终止点
-     * @param clockwise_ 是否按顺时针方向（true 表示顺时针，视角为从上方俯视）
-     * @param largeArc_ 是否为优弧（大于180‌°‌）
+     * @param clockwise_ 是否按顺时针方向(true 表示顺时针，视角为从上方俯视)
+     * @param largeArc_ 是否为优弧(大于180‌°‌)
      */
     Arc(const Point& start_ = Point(), const Point& end_ = Point(), double r_ = 0.0,
         bool clockwise_ = true, bool largeArc_ = false);
@@ -209,7 +226,7 @@ struct Arc {
      * @param r_ 半径
      * @param angleStart_ 起始角度
      * @param angleEnd_ 终止角度
-     * @param clockwise_ 是否按顺时针方向（true 表示顺时针，视角为从上方俯视）
+     * @param clockwise_ 是否按顺时针方向(true 表示顺时针，视角为从上方俯视)
      */
     Arc(const Point& center_, double r_, double angleStart_, double angleEnd_,
         bool clockwise_ = true);

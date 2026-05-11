@@ -23,14 +23,13 @@ struct PIDParam {
 /**
  * @brief 单变量 PID 控制器
  *
- * 用于控制单一标量量（例如朝向误差）。
+ * 用于控制单一标量量(例如朝向误差)。
  */
 class PID1D : public PIDParam {
   private:
     timer track_timer_;
-    int last_time_;
     int dt_ = 0;
-    timer jump_timer_;
+    int prev_time_;
     double err_crt_, err_prev_;
     double err_dvt_;
     double err_int_;
@@ -40,23 +39,17 @@ class PID1D : public PIDParam {
 
   public:
     /**
-     * @brief 构造一个 1D PID 控制器
-     * @param kP 比例系数
-     * @param kI 积分系数
-     * @param kD 微分系数
-     * @param I_th_ 启动积分项误差阈值
-     * @param I_max_ 积分项饱和值
+     * @brief 利用 PIDParam 结构体构造一个 1D PID 控制器
      */
     explicit PID1D(const PIDParam& param);
     void setParam(const PIDParam& param);
-    void setCoeff(double kP, double kI, double kD);
     void setITh(double I_th) { I_th_ = I_th; }
     void setIMax(double I_max) { I_max_ = I_max; }
     void setSignFlipClear(bool sign_flip_clear) { sign_flip_clear_ = sign_flip_clear; }
 
     /**
      * @brief 根据当前误差更新PID控制器变量
-     * @param err_crt 当前误差（目标 - 实际）
+     * @param err_crt 当前误差(目标 - 实际)
      */
     void update(double err_crt);
     double getOutput() const { return output_; }
@@ -74,24 +67,18 @@ class PID1D : public PIDParam {
 class PID2D : public PIDParam {
   private:
     timer track_timer_;
-    int last_time_;
     int dt_ = 0;
+    int prev_time_;
     Vector err_crt_, err_prev_;
     Vector err_dvt_;
     Vector err_int_;
     bool first_update_ = true;
-    timer jump_timer_;
     Vector P_, I_, D_;
     Vector output_;
 
   public:
     /**
-     * @brief 构造一个 2D PID 控制器
-     * @param kP 比例系数
-     * @param kI 积分系数
-     * @param kD 微分系数
-     * @param I_th_ 启动积分项误差阈值
-     * @param I_max_ 积分项饱和值
+     * @brief 利用 PIDParam 结构体构造一个 2D PID 控制器
      */
     explicit PID2D(const PIDParam& param);
     void setParam(const PIDParam& param);

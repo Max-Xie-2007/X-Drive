@@ -1,40 +1,51 @@
 #include "autonomous.h"
 #include "auto-functions/motion.h"
+#include "chassis/positioning.h"
+#include "globals.h"
 #include "robot-config.h"
 
+#include <iomanip>
 void autonomous() {
+    current_stage = Stage::AUTON;
     timer auton_timer;
-    myDrive.setDriveMethod(VOLT);
-    myDrive.setPriorFactor(ANGULAR);
-    myDrive.setBrakeType(hold);
     switch (current_route) {
-#ifdef LEFT
-        case L1:
-            autoL1();
+        case Route::TOUR1:
+            current_side == Side::LEFT ? autoL1() : autoR1();
             break;
-        case L2:
-            autoL2();
+        case Route::TOUR2:
+            current_side == Side::LEFT ? autoL2() : autoR2();
             break;
-        case L3:
-            autoL3();
+        case Route::TOUR3:
+            current_side == Side::LEFT ? autoL3() : autoR3();
             break;
-#endif
-#ifdef RIGHT
-        case R1:
-            autoR1();
+        case Route::TOURD:
+            current_side == Side::LEFT ? autoLD() : autoRD();
             break;
-        case R2:
-            autoR2();
+        case Route::SKILLS_COOP:
+            current_side == Side::LEFT ? autoLSkillsCoop() : autoRSkillsCoop();
             break;
-        case R3:
-            autoR3();
+        case Route::SKILLS_SOLO:
+            autoSkillsSolo();
             break;
-#endif
-        case SKILLS:
-            autoSkills();
+        default:
             break;
     }
-    Controller.Screen.setCursor(3, 13);
-    Controller.Screen.print("T: %.2fs", auton_timer.time() / 1000.0);
-    std::cout << "Total Time: " << auton_timer.time() / 1000.0 << "s" << std::endl;
+    std::cout << std::fixed << std::setprecision(2)
+              << "Total Time: " << auton_timer.time() / 1000.0 << "s" << std::endl;
+    if (current_mode == Mode::COMPETITION) {
+
+    } else {
+        myDrive.stop(coast);
+    }
 }
+void autoL1() {}
+void autoL2() {}
+void autoL3() {}
+void autoLD() {}
+void autoR1() {}
+void autoR2() {}
+void autoR3() {}
+void autoRD() {}
+void autoLSkillsCoop() {}
+void autoRSkillsCoop() {}
+void autoSkillsSolo() {}

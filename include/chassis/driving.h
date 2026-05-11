@@ -7,13 +7,12 @@
 
 using namespace vex;
 
-enum DriveMethod { VOLT, PCT };
 enum DriveFactor { TRANS, ANGULAR, NEITHER };
 
 /**
  * @brief 底盘控制线程函数
  */
-void updateChassis();
+void threadUpdateDriving();
 
 class XDrive { // 菱底
   private:

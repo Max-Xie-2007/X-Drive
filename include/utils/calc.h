@@ -1,7 +1,6 @@
 #ifndef CALC_H
 #define CALC_H
 #include "utils/geometry.h"
-
 /**
  * @brief 计算符号函数
  * @param val 输入值
@@ -13,33 +12,48 @@ int sgn(const double& val);
  * @param val 输入值
  * @param limit 正饱和值
  * @return 饱和后的值
+ * @note 若 limit 为负则返回 0
  */
 double sat(const double& val, const double& limit);
-Vector sat(const Vector& val, const double& limit);
 /**
- * @brief 绝对值下限幅函数
- * @param val 输入值
- * @param limit 正限幅值
- * @return 绝对值下限幅后的值
+ * @brief 向量饱和函数
+ * @param val 输入向量
+ * @param limit 正饱和值
+ * @return 饱和后的向量(模长不超过 limit，方向不变)
+ * @note 若 limit 为负则返回 0
  */
-double desat(const double& val, const double& limit);
-Vector desat(const Vector& val, const double& limit);
+Vector sat(const Vector& val, const double& limit);
 /**
  * @brief 死区函数
  * @param val 输入值
  * @param limit 正死区值
- * @return 死区外的值
+ * @return 0 或死区外的值
+ * @note 若 limit 为负则返回 0
  */
 double deadZone(const double& val, const double& limit);
+/**
+ * @brief 向量死区函数
+ * @param val 输入向量
+ * @param limit 正死区值
+ * @return 零向量或模长在死区外的向量
+ * @note 若 limit 为负则返回 0
+ */
 Vector deadZone(const Vector& val, const double& limit);
 /**
  * @brief 平滑函数
  * @param val 输入值
  * @param prev_val 前一个输入值
- * @param slew_rate 最大变化率（单位：每周期的最大增量）
+ * @param slew_rate 最大变化率(%/ms)
  * @return 平滑后的值
  */
 double slew(const double& val, const double& prev_val, const double& slew_rate);
+/**
+ * @brief 向量平滑函数
+ * @param val 输入向量
+ * @param prev_val 前一个输入向量
+ * @param slew_rate 最大变化率(%/ms)
+ * @return 平滑后的向量
+ */
 Vector slew(const Vector& val, const Vector& prev_val, const double& slew_rate);
 /**
  * @brief 英寸转厘米
@@ -58,7 +72,13 @@ double cm2inch(const double& cm);
  * @param angle 度数
  * @return 归一化后的角度值
  */
-double degNorm(const double& angle);
+double degNorm360(const double& angle);
+/**
+ * @brief 角度归一化，调整到(-180‌°,180‌°]
+ * @param angle 度数
+ * @return 归一化后的角度值
+ */
+double degNorm180(const double& angle);
 /**
  * @brief 弧度归一化，调整到[0,2π)
  * @param angle 弧度值

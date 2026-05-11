@@ -1,70 +1,56 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
+#include "ui/ui-brain.h"
+#include <iostream>
 
-#include <string>
+/************* ROBOT MACROS DEFINE *************/
 
-/************* ROBOT DEFINITION *************/
+#define ROBOT_GRAY
+// #define ROBOT_PURPLE
 
-// #define ROBOT_WHITE
-#define ROBOT_BLACK
+/***********************************************/
 
-/********************************************/
-
-#ifdef ROBOT_WHITE
-#define LEFT
-#endif // ROBOT_WHITE
-
-#ifdef ROBOT_BLACK
-#define RIGHT
-#endif // ROBOT_BLACK
-
-#ifdef LEFT
+enum class Driver { CHIFENG, CKS, ZYX, XTR, COUNT };
+enum class Mode { COMPETITION, PRACTICE, PID_DEBUG, ROUTE_DEBUG, COUNT };
+enum class Side { LEFT, RIGHT };
+enum class Route { TOUR1, TOUR2, TOUR3, TOURD, SKILLS_COOP, SKILLS_SOLO, COUNT };
+enum class Color { RED, BLUE, NEITHER, COUNT };
 /**
- * @brief 自动路线枚举（左场）
+ * @brief 机器人当前阶段枚举
+ * @param PRE_CALIBRATION 校准前阶段，需完成机器折叠和
+ * @param CALIBRATING 校准阶段，折叠完成后正在校准传感器的阶段
+ * @param CALIBRATED 校准完成阶段，正在等待比赛开始的阶段
+ * @param AUTON 自动阶段，正在执行自动程序的阶段
+ * @param DRIVER_CONTROL 遥控阶段，正在执行遥控程序的阶段
+ * @param COUNT 枚举数量
  */
-enum Route { L1, L2, L3, SKILLS };
-#endif
-#ifdef RIGHT
-/**
- * @brief 自动路线枚举（右场）
- */
-enum Route { R1, R2, R3, SKILLS };
-#endif
-extern std::string auto_route_name[4];
+enum class Stage {
+    PRE_CALIBRATION,
+    CALIBRATING,
+    CALIBRATED,
+    AUTON,
+    DRIVER_CONTROL,
+    COUNT
+};
 
-/**
- * @brief 联盟颜色
- */
-enum Color { RED, BLUE };
-/**
- * @brief 运行模式
- */
-enum Mode { COMPETITION, PID_DEBUG, ROUTE_DEBUG };
-
+extern Driver current_driver;
 extern Mode current_mode;
+extern Side current_side;
 extern Route current_route;
 extern Color current_color;
+extern Stage current_stage;
+extern bool expansion_done;
 
-extern bool expansion_complete;
-
-/**
- * @brief 切换运行模式
- * @param new_mode 目标模式
- */
-void changeModeTo(Mode new_mode);
-/**
- * @brief 切换自动路线
- * @param new_route 目标路线
- */
-void changeRouteTo(Route new_route);
-/**
- * @brief 切换红蓝方
- */
-void changeColor();
-
-/**
- * @brief 轮换自动程序路线
- */
+void switchDriver();
+void switchMode();
+void switchSide();
 void switchRoute();
+void switchColor();
+
+void setDriver(Driver driver);
+void setMode(Mode mode);
+void setSide(Side side);
+void setRoute(Route route);
+void setColor(Color color);
 
 #endif // GLOBALS_H

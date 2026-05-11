@@ -3,7 +3,7 @@
 #include "utils/params.h"
 using namespace vex;
 
-void updatePosition() {
+void threadUpdatePosition() {
     while (true) {
         myPosition.update();
         this_thread::sleep_for(cycle.position);
@@ -33,8 +33,7 @@ OrthogonalOdometry::OrthogonalOdometry(rotation& rotation_left, rotation& rotati
     intersection_pos_ = center_pos_ + hardware.odometer.offset;
 }
 
-// 重设位置
-void OrthogonalOdometry::reset(const Point& init_pos, const double& init_heading) {
+void OrthogonalOdometry::reset(const Point& center_pos, const double& heading) {
     // Timer reset
     position_update_timer_.reset();
     last_time_ = 0;
@@ -50,12 +49,35 @@ void OrthogonalOdometry::reset(const Point& init_pos, const double& init_heading
     heading_delta_ = 0;
     heading_raw_ = inertial_.heading(deg);
     last_heading_raw_ = inertial_.heading(deg);
-    heading_unwrapped_ = init_heading;
-    last_heading_unwrapped_ = init_heading;
+    heading_unwrapped_ = heading;
+    last_heading_unwrapped_ = heading;
     // Position reset
-    center_pos_ = init_pos;
-    last_center_pos_ = init_pos;
-    intersection_pos_ = center_pos_ + hardware.odometer.offset.rotate(init_heading);
+    center_pos_ = center_pos;
+    last_center_pos_ = center_pos;
+    intersection_pos_ = center_pos_ + hardware.odometer.offset.rotate(heading);
+}
+
+void OrthogonalOdometry::reset(const Point& center_pos) {
+    // Timer reset
+    position_update_timer_.reset();
+    last_time_ = 0;
+    // Encoder reset
+    rotation_left_.resetPosition();
+    rotation_right_.resetPosition();
+    left_rot_dist_ = 0;
+    right_rot_dist_ = 0;
+    last_left_rot_dist_ = 0;
+    last_right_rot_dist_ = 0;
+    // Heading reset
+    heading_delta_int_ = 0;
+    heading_delta_ = 0;
+    heading_raw_ = inertial_.heading(deg);
+    last_heading_raw_ = inertial_.heading(deg);
+    last_heading_unwrapped_ = heading_unwrapped_;
+    // Position reset
+    center_pos_ = center_pos;
+    last_center_pos_ = center_pos;
+    intersection_pos_ = center_pos_ + hardware.odometer.offset.rotate(heading_unwrapped_);
 }
 
 void OrthogonalOdometry::update() {
@@ -67,9 +89,9 @@ void OrthogonalOdometry::update() {
     last_left_rot_dist_ = left_rot_dist_;
     last_right_rot_dist_ = right_rot_dist_;
     left_rot_dist_ =
-        deg2rad(rotation_left_.position(deg)) * hardware.odometer.pos_wheel_radius;
+        rotation_left_.position(deg) * hardware.odometer.rotation_dist_per_deg;
     right_rot_dist_ =
-        deg2rad(rotation_right_.position(deg)) * hardware.odometer.pos_wheel_radius;
+        rotation_right_.position(deg) * hardware.odometer.rotation_dist_per_deg;
     if (fabs(left_rot_dist_ - last_left_rot_dist_) < 0.005)
         left_rot_dist_ = last_left_rot_dist_;
     if (fabs(right_rot_dist_ - last_right_rot_dist_) < 0.005)

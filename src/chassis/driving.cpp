@@ -7,10 +7,10 @@
 
 using namespace vex;
 
-void updateChassis() {
+void threadUpdateDriving() {
     while (true) {
         myDrive.drive();
-        this_thread::sleep_for(cycle.driver);
+        this_thread::sleep_for(cycle.driving);
     }
 }
 

@@ -19,10 +19,7 @@ void reach(const Point& target_position, double target_heading, int time_limit,
     // init variables
     Vector prev_translational_error = target_position - myPosition.getCenterPos();
     Vector prev_translational_output = myPosition.getTranslationalVelocity();
-    double prev_angular_error = degNorm(target_heading - myPosition.getHeading());
-    if (prev_angular_error > 180) {
-        prev_angular_error -= 360;
-    }
+    double prev_angular_error = degNorm180(target_heading - myPosition.getHeading());
     double prev_angular_output = myPosition.getAngularVelocity();
     timer timeout_timer;
 
@@ -56,10 +53,7 @@ void reach(const Point& target_position, double target_heading, int time_limit,
         const Vector translational_error = target_position - myPosition.getCenterPos();
         const Vector translational_dvt =
             (translational_error - prev_translational_error) / cycle.auton;
-        double angular_error = degNorm(target_heading - myPosition.getHeading());
-        if (angular_error > 180) {
-            angular_error -= 360;
-        }
+        const double angular_error = degNorm180(target_heading - myPosition.getHeading());
         const double angular_dvt = (angular_error - prev_angular_error) / cycle.auton;
 
         // calculate outputs
@@ -77,10 +71,10 @@ void reach(const Point& target_position, double target_heading, int time_limit,
         }
         translational_output =
             sat(translational_output, reach_cfg.max_translational_speed);
-        translational_output =
-            desat(translational_output, reach_cfg.min_translational_speed);
+        // translational_output =
+        //     desat(translational_output, reach_cfg.min_translational_speed);
         angular_output = sat(angular_output, reach_cfg.max_angular_speed);
-        angular_output = desat(angular_output, reach_cfg.min_angular_speed);
+        // angular_output = desat(angular_output, reach_cfg.min_angular_speed);
 
         // apply outputs
         myDrive.setAbsAuton(translational_output, angular_output);
@@ -142,10 +136,8 @@ void traceWithGlobalHeading(const T& path, double target_heading, int time_limit
         }
     }();
     Vector prev_translational_output = myPosition.getTranslationalVelocity();
-    double prev_angular_error = degNorm(target_heading - myPosition.getHeading());
-    if (prev_angular_error > 180) {
-        prev_angular_error -= 360;
-    }
+    double prev_angular_error =
+        degNorm180(target_heading - myPosition.getHeading());
     double prev_angular_output = myPosition.getAngularVelocity();
     timer timeout_timer;
 
@@ -164,9 +156,8 @@ void traceWithGlobalHeading(const T& path, double target_heading, int time_limit
     if (trace_cfg.look_ahead_dist < translational_ec_opt.err_tol_) {
         // prevent look-ahead distance from being smaller than translational error
         // tolerance, which would cause the robot to stop right at the start
-        translational_ec.setErrorTol(trace_cfg.look_ahead_dist - 0.5);
+        translational_ec.err_tol_ = trace_cfg.look_ahead_dist - 0.5;
     }
-    //
 
     // loop
     while (timeout_timer.time(msec) < time_limit &&
@@ -194,10 +185,7 @@ void traceWithGlobalHeading(const T& path, double target_heading, int time_limit
         }();
         const Vector translational_dvt =
             (translational_error - prev_translational_error) / cycle.auton;
-        double angular_error = degNorm(target_heading - myPosition.getHeading());
-        if (angular_error > 180) {
-            angular_error -= 360;
-        }
+        double angular_error = degNorm180(target_heading - myPosition.getHeading());
         const double angular_dvt = (angular_error - prev_angular_error) / cycle.auton;
 
         // calculate outputs
@@ -216,8 +204,8 @@ void traceWithGlobalHeading(const T& path, double target_heading, int time_limit
         translational_output =
             sat(translational_output, trace_cfg.max_translational_speed);
         angular_output = sat(angular_output, trace_cfg.max_angular_speed);
-        translational_output =
-            desat(translational_output, trace_cfg.min_translational_speed);
+        // translational_output =
+        //     desat(translational_output, trace_cfg.min_translational_speed);
 
         // apply outputs
         myDrive.setAbsAuton(translational_output, angular_output);
@@ -299,7 +287,7 @@ void traceWithRelativeHeading(const T& path, double terminal_target_heading,
     if (trace_cfg.look_ahead_dist < translational_ec_opt.err_tol_) {
         // prevent look-ahead distance from being smaller than translational error
         // tolerance, which would cause the robot to stop right at the start
-        translational_ec.setErrorTol(trace_cfg.look_ahead_dist - 0.5);
+        translational_ec.err_tol_ = trace_cfg.look_ahead_dist - 0.5;
     }
     //
 
@@ -339,7 +327,7 @@ void traceWithRelativeHeading(const T& path, double terminal_target_heading,
         }();
         const Vector translational_dvt =
             (translational_error - prev_translational_error) / cycle.auton;
-        double angular_error = degNorm(target_heading - myPosition.getHeading());
+        double angular_error = degNorm180(target_heading - myPosition.getHeading());
         if (angular_error > 180) {
             angular_error -= 360;
         }
@@ -361,8 +349,8 @@ void traceWithRelativeHeading(const T& path, double terminal_target_heading,
         translational_output =
             sat(translational_output, trace_cfg.max_translational_speed);
         angular_output = sat(angular_output, trace_cfg.max_angular_speed);
-        translational_output =
-            desat(translational_output, trace_cfg.min_translational_speed);
+        // translational_output =
+        //     desat(translational_output, trace_cfg.min_translational_speed);
 
         // apply outputs
         myDrive.setAbsAuton(translational_output, angular_output);

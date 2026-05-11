@@ -1,7 +1,9 @@
 #include "utils/geometry.h"
 #include "utils/calc.h"
-#include <cmath>
 
+#include <cmath>
+#include <iostream>
+#include <stdlib.h>
 double disBetween(const Point& start, const Point& end) {
     return sqrt((start.x_ - end.x_) * (start.x_ - end.x_) +
                 (start.y_ - end.y_) * (start.y_ - end.y_));
@@ -37,11 +39,11 @@ Vector Point::to(const Arc& arc) const {
     Vector startVec = Vector(arc.center_, arc.start_);
     Vector endVec = Vector(arc.center_, arc.end_);
     double projAngle = atan2(on.dy_, on.dx_) * 180.0 / M_PI;
-    projAngle = degNorm(projAngle);
+    projAngle = degNorm360(projAngle);
     double startAngle = atan2(startVec.dy_, startVec.dx_) * 180.0 / M_PI;
-    startAngle = degNorm(startAngle);
+    startAngle = degNorm360(startAngle);
     double endAngle = atan2(endVec.dy_, endVec.dx_) * 180.0 / M_PI;
-    endAngle = degNorm(endAngle);
+    endAngle = degNorm360(endAngle);
     bool onArc = false;
     if (arc.clockwise_) {
         if (arc.large_arc_) {
@@ -70,6 +72,11 @@ Vector Point::to(const Arc& arc) const {
 }
 
 // 向量
+Vector::Vector(double angle) {
+    double r = deg2rad(angle);
+    dx_ = cos(r);
+    dy_ = sin(r);
+}
 Vector::Vector(double dx, double dy) : dx_(dx), dy_(dy) {}
 Vector::Vector(const Point& start, const Point& end)
     : dx_(end.x_ - start.x_), dy_(end.y_ - start.y_) {}
@@ -108,7 +115,7 @@ Vector Vector::rotate(double angle) const {
 
 double Vector::angle() const {
     return (std::abs(dy_) > 1e-9 || std::abs(dx_) > 1e-9)
-               ? degNorm(rad2deg(atan2(dy_, dx_)))
+               ? degNorm360(rad2deg(atan2(dy_, dx_)))
                : NAN;
 }
 double Vector::projectOn(const Vector& other) const { return this->dot(other.norm()); }
@@ -224,9 +231,9 @@ Point Circle::findIntersection(const Arc& arc) const {
     Point p1 = Point(x1, y1);
     Point p2 = Point(x2, y2);
     double angle1 =
-        degNorm(rad2deg(atan2(p1.y_ - arc.center_.y_, p1.x_ - arc.center_.x_)));
+        degNorm360(rad2deg(atan2(p1.y_ - arc.center_.y_, p1.x_ - arc.center_.x_)));
     double angle2 =
-        degNorm(rad2deg(atan2(p2.y_ - arc.center_.y_, p2.x_ - arc.center_.x_)));
+        degNorm360(rad2deg(atan2(p2.y_ - arc.center_.y_, p2.x_ - arc.center_.x_)));
     bool onArc1 = false, onArc2 = false;
     if (arc.clockwise_) {
         if (arc.angle_end_ > arc.angle_start_) {
@@ -275,8 +282,8 @@ Arc::Arc(const Point& start, const Point& end, double r, bool clockwise, bool la
     }
     // 计算起点和终点对应的圆心角度数
     angle_start_ =
-        degNorm(rad2deg(atan2(start_.y_ - center_.y_, start_.x_ - center_.x_)));
-    angle_end_ = degNorm(rad2deg(atan2(end_.y_ - center_.y_, end_.x_ - center_.x_)));
+        degNorm360(rad2deg(atan2(start_.y_ - center_.y_, start_.x_ - center_.x_)));
+    angle_end_ = degNorm360(rad2deg(atan2(end_.y_ - center_.y_, end_.x_ - center_.x_)));
     // 计算三参
     D_ = -2 * center_.x_;
     E_ = -2 * center_.y_;
@@ -284,8 +291,8 @@ Arc::Arc(const Point& start, const Point& end, double r, bool clockwise, bool la
 }
 Arc::Arc(const Point& center, double r, double angle_start, double angle_end,
          bool clockwise)
-    : center_(center), r_(r), angle_start_(degNorm(angle_start)),
-      angle_end_(degNorm(angle_end)), clockwise_(clockwise) {
+    : center_(center), r_(r), angle_start_(degNorm360(angle_start)),
+      angle_end_(degNorm360(angle_end)), clockwise_(clockwise) {
     // 计算起点和终点坐标
     start_ = Point(center.x_ + r * cos(deg2rad(angle_start_)),
                    center.y_ + r * sin(deg2rad(angle_start_)));
@@ -296,6 +303,6 @@ Arc::Arc(const Point& center, double r, double angle_start, double angle_end,
     E_ = -2 * center.y_;
     F_ = center.x_ * center.x_ + center.y_ * center.y_ - r * r;
     // 计算是否为大弧
-    double angleDiff = degNorm(angle_end_ - angle_start_);
+    double angleDiff = degNorm360(angle_end_ - angle_start_);
     large_arc_ = clockwise_ ^ (angleDiff > 180.0);
 }
