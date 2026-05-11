@@ -294,10 +294,10 @@ void printMotorInfo(motor& the_motor, std::string name, int port, int row) {
 void displayMotors() {
     Brain.Screen.setFont(mono15);
     Brain.Screen.setFillColor(white);
-    printMotorInfo(Motors_Base_LF[0], "[Motor_Base_LF]", 4, 1);
-    printMotorInfo(Motors_Base_LB[0], "[Motor_Base_LB]", 7, 2);
-    printMotorInfo(Motors_Base_RF[0], "[Motor_Base_RF]", 8, 3);
-    printMotorInfo(Motors_Base_RB[0], "[Motor_Base_RB]", 9, 4);
+    printMotorInfo(Motors_Base_LF[0], "[Motor_Base_LF]", 11, 1);
+    printMotorInfo(Motors_Base_LB[0], "[Motor_Base_LB]", 12, 2);
+    printMotorInfo(Motors_Base_RF[0], "[Motor_Base_RF]", 21, 3);
+    printMotorInfo(Motors_Base_RB[0], "[Motor_Base_RB]", 10, 4);
 }
 
 void displayDevices() {
