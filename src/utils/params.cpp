@@ -15,7 +15,7 @@ const Hardware hardware = {.odometer = {.rotation_dist_per_deg = 4 * 24 / 7348.9
 ReachCfg default_reach_cfg;
 TraceCfg default_trace_cfg;
 
-PIDParam default_reach_translational = {.kP_ = 4.0,
+PIDParam default_reach_translational = {.kP_ = 10.0,
                                         .kI_ = 0.0,
                                         .kD_ = 0.0,
                                         .I_th_ = 0.0,

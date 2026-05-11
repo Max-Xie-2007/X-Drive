@@ -82,18 +82,22 @@ Button btn_right(400, 160, 60, 60, "RIGHT", [] { setSide(Side::RIGHT); });
 
 // params interface labels and buttons
 
-Label lbl_translational(0, 130, 30, 60, "LAT");
-Label lbl_angular(0, 185, 30, 60, "ANG");
+Label lbl_translational(0, 129, 30, 37, "TRN");
+Label lbl_angular(0, 166, 30, 37, "ANG");
+Label lbl_deviational(0, 203, 30, 37, "DEV");
 Label lbl_kp(30, 95, 150, 35, "kP");
 Label lbl_ki(180, 95, 150, 35, "kI");
 Label lbl_kd(330, 95, 150, 35, "kD");
 
-Label lbl_translational_kp(80, 130, 50, 55, default_reach_translational.kP_);
-Label lbl_translational_ki(230, 130, 50, 55, default_reach_translational.kI_);
-Label lbl_translational_kd(380, 130, 50, 55, default_reach_translational.kD_);
-Label lbl_angular_kp(80, 185, 50, 55, default_reach_angular.kP_);
-Label lbl_angular_ki(230, 185, 50, 55, default_reach_angular.kI_);
-Label lbl_angular_kd(380, 185, 50, 55, default_reach_angular.kD_);
+Label lbl_translational_kp(80, 129, 50, 37, default_reach_translational.kP_);
+Label lbl_translational_ki(230, 129, 50, 37, default_reach_translational.kI_);
+Label lbl_translational_kd(380, 129, 50, 37, default_reach_translational.kD_);
+Label lbl_angular_kp(80, 166, 50, 37, default_reach_angular.kP_);
+Label lbl_angular_ki(230, 166, 50, 37, default_reach_angular.kI_);
+Label lbl_angular_kd(380, 166, 50, 37, default_reach_angular.kD_);
+Label lbl_deviational_kp(80, 203, 50, 37, default_trace_deviational.kP_);
+Label lbl_deviational_ki(230, 203, 50, 37, default_trace_deviational.kI_);
+Label lbl_deviational_kd(380, 203, 50, 37, default_trace_deviational.kD_);
 
 const float translational_kp_step = 0.05;
 const float translational_ki_step = 1.0;
@@ -335,14 +339,15 @@ void displayInfo() {
 void displayParams() {
     lbl_translational.render(black, white, white);
     lbl_angular.render(black, white, white);
+    lbl_deviational.render(black, white, white);
     lbl_kp.render(black, white, white);
     lbl_ki.render(black, white, white);
     lbl_kd.render(black, white, white);
 
     btn_param_set_reach.render(black, black,
-                             current_param_set == PIDParamSet::REACH ? green : white);
+                               current_param_set == PIDParamSet::REACH ? green : white);
     btn_param_set_trace.render(black, black,
-                                current_param_set == PIDParamSet::TRACE ? green : white);
+                               current_param_set == PIDParamSet::TRACE ? green : white);
 
     const PIDParam* translational_pid = selectedTranslationalPid();
     const PIDParam* angular_pid = selectedAngularPid();
@@ -374,6 +379,35 @@ void displayParams() {
     btn_angular_kp_minus.render(black, black, red);
     btn_angular_ki_minus.render(black, black, red);
     btn_angular_kd_minus.render(black, black, red);
+
+    if (current_param_set == PIDParamSet::TRACE) {
+        const PIDParam* deviational_pid = selectedDeviationalPid();
+        lbl_deviational_kp.setText(deviational_pid->kP_);
+        lbl_deviational_ki.setText(deviational_pid->kI_);
+        lbl_deviational_kd.setText(deviational_pid->kD_);
+        lbl_deviational_kp.render(black, white, white);
+        lbl_deviational_ki.render(black, white, white);
+        lbl_deviational_kd.render(black, white, white);
+        btn_deviational_kp_add.render(black, black, blue);
+        btn_deviational_ki_add.render(black, black, blue);
+        btn_deviational_kd_add.render(black, black, blue);
+        btn_deviational_kp_minus.render(black, black, red);
+        btn_deviational_ki_minus.render(black, black, red);
+        btn_deviational_kd_minus.render(black, black, red);
+    } else {
+        lbl_deviational_kp.setText("N/A");
+        lbl_deviational_ki.setText("N/A");
+        lbl_deviational_kd.setText("N/A");
+        lbl_deviational_kp.render(black, white, white);
+        lbl_deviational_ki.render(black, white, white);
+        lbl_deviational_kd.render(black, white, white);
+        btn_deviational_kp_add.render(black, black, color(192, 192, 192));
+        btn_deviational_ki_add.render(black, black, color(192, 192, 192));
+        btn_deviational_kd_add.render(black, black, color(192, 192, 192));
+        btn_deviational_kp_minus.render(black, black, color(192, 192, 192));
+        btn_deviational_ki_minus.render(black, black, color(192, 192, 192));
+        btn_deviational_kd_minus.render(black, black, color(192, 192, 192));
+    }
 }
 
 void threadUpdateBrainUI() {
@@ -458,6 +492,14 @@ void threadUpdateBrainUI() {
                 btn_angular_kp_minus.check();
                 btn_angular_ki_minus.check();
                 btn_angular_kd_minus.check();
+                if (current_param_set == PIDParamSet::TRACE) {
+                    btn_deviational_kp_add.check();
+                    btn_deviational_ki_add.check();
+                    btn_deviational_kd_add.check();
+                    btn_deviational_kp_minus.check();
+                    btn_deviational_ki_minus.check();
+                    btn_deviational_kd_minus.check();
+                }
                 break;
         }
         this_thread::sleep_for(cycle.brain_ui_update);
