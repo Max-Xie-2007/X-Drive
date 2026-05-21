@@ -18,6 +18,9 @@ extern inertial Inertial;
 extern rotation Rotation_L;
 extern rotation Rotation_R;
 
+// Pistons
+extern pneumatics Piston_Painter;
+
 // Drivetrain motors
 inline constexpr int base_motor_count = 1;
 extern motor Motors_Base_LF[base_motor_count];

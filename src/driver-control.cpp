@@ -3,7 +3,7 @@
 #include "controller.h"
 #include "globals.h"
 #include "robot-config.h"
-
+#include "subsystem/painter.h"
 #include "ui/ui-brain.h"
 #include "ui/ui-controller.h"
 #include "utils/calc.h"
@@ -44,6 +44,7 @@ void driverControl() {
                     myDrive.setPriorFactor(NEITHER);
                     chassisControl();
                     switchColorControl();
+                    pistonControl();
                     break;
                 default:
                     break;
@@ -66,6 +67,7 @@ void driverControl() {
                     myDrive.setPriorFactor(NEITHER);
                     chassisControl();
                     switchColorControl();
+                    pistonControl();
                     switchAutonControl();
                     break;
                 default:
@@ -91,6 +93,7 @@ void driverControl() {
                     switchAutonControl();
                     switchColorControl();
                     calibration4Debug();
+                    pistonControl();
                     if (!prev_Down && Down) {
                         autonomous();
                         current_stage = Stage::DRIVER_CONTROL;
@@ -118,6 +121,7 @@ void driverControl() {
                     chassisControl();
                     chassisDebug();
                     calibration4Debug();
+                    pistonControl();
                     break;
                 default:
                     break;
@@ -134,6 +138,14 @@ void chassisControl() {
         getCurvedOutput(-A1, {.exponent = current_driver == Driver::CKS ? 1.0 : 1.012});
     myDrive.setAbsDriver(Vector(lateral, forward), angular); // 第三人称
     // myDrive.setRelDriver(Vector(lateral, forward).rotate(-90), angular); // 第一人称
+}
+
+void pistonControl() {
+    if (R1) {
+        stopPainting();
+    } else if (R2) {
+        startPainting();
+    }
 }
 
 void switchAutonControl() {
@@ -167,7 +179,7 @@ void switchColorControl() {
     }
 }
 
-void preFoldingInit() {}
+void preFoldingInit() { stopPainting(); }
 
 void calibrate() {
     timer calibration_timer;

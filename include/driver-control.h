@@ -5,6 +5,7 @@
 
 void driverControl();
 void chassisControl();
+void pistonControl();
 void switchAutonControl();
 void switchColorControl();
 void preFoldingInit();
