@@ -39,26 +39,20 @@ Vector Point::to(const Arc& arc) const {
     Vector on = oc.norm() * arc.r_;
     Point projection = Point(arc.center_.x_ + on.dx_, arc.center_.y_ + on.dy_);
     // 检查投影点是否在圆弧上
-    Vector startVec = Vector(arc.center_, arc.start_);
-    Vector endVec = Vector(arc.center_, arc.end_);
     double projAngle = atan2(on.dy_, on.dx_) * 180.0 / M_PI;
     projAngle = degNorm360(projAngle);
-    double startAngle = atan2(startVec.dy_, startVec.dx_) * 180.0 / M_PI;
-    startAngle = degNorm360(startAngle);
-    double endAngle = atan2(endVec.dy_, endVec.dx_) * 180.0 / M_PI;
-    endAngle = degNorm360(endAngle);
     bool onArc = false;
     if (arc.clockwise_) {
-        if (arc.large_arc_) {
-            onArc = !(projAngle < startAngle && projAngle > endAngle);
+        if (arc.angle_end_ > arc.angle_start_) {
+            onArc = (projAngle >= arc.angle_end_ || projAngle <= arc.angle_start_);
         } else {
-            onArc = (projAngle <= startAngle && projAngle >= endAngle);
+            onArc = (projAngle <= arc.angle_start_ && projAngle >= arc.angle_end_);
         }
     } else {
-        if (arc.large_arc_) {
-            onArc = !(projAngle > startAngle && projAngle < endAngle);
+        if (arc.angle_end_ < arc.angle_start_) {
+            onArc = (projAngle >= arc.angle_start_ || projAngle <= arc.angle_end_);
         } else {
-            onArc = (projAngle >= startAngle && projAngle <= endAngle);
+            onArc = (projAngle >= arc.angle_start_ && projAngle <= arc.angle_end_);
         }
     }
     if (onArc) {
@@ -167,7 +161,7 @@ Point Circle::findIntersection(const Segment& seg) const {
         return seg.end_;
     }
     double A, B, C;
-    if (seg.k_) {
+    if (!std::isnan(seg.k_)) {
         A = 1 + seg.k_ * seg.k_;
         B = D_ + seg.k_ * (2 * seg.b_ + E_);
         C = F_ + seg.b_ * (seg.b_ + E_);
@@ -181,7 +175,7 @@ Point Circle::findIntersection(const Segment& seg) const {
 
     double sqrtDelta = sqrt(delta);
     double x1, y1, x2, y2;
-    if (seg.k_) {
+    if (!std::isnan(seg.k_)) {
         x1 = (-B + sqrtDelta) / (2 * A);
         y1 = seg.k_ * x1 + seg.b_;
         x2 = (-B - sqrtDelta) / (2 * A);
@@ -206,7 +200,7 @@ Point Circle::findIntersection(const Arc& arc) const {
     Segment _seg(D_ - arc.D_, E_ - arc.E_, F_ - arc.F_); // 两圆公共弦
     // 计算圆与公共弦的交点
     double A, B, C;
-    if (_seg.k_) {
+    if (!std::isnan(_seg.k_)) {
         A = 1 + _seg.k_ * _seg.k_;
         B = D_ + _seg.k_ * (2 * _seg.b_ + E_);
         C = F_ + _seg.b_ * (_seg.b_ + E_);
@@ -220,7 +214,7 @@ Point Circle::findIntersection(const Arc& arc) const {
 
     double sqrtDelta = sqrt(delta);
     double x1, y1, x2, y2;
-    if (_seg.k_) {
+    if (!std::isnan(_seg.k_)) {
         x1 = (-B + sqrtDelta) / (2 * A);
         y1 = _seg.k_ * x1 + _seg.b_;
         x2 = (-B - sqrtDelta) / (2 * A);
@@ -243,8 +237,8 @@ Point Circle::findIntersection(const Arc& arc) const {
             onArc1 = (angle1 >= arc.angle_end_ || angle1 <= arc.angle_start_);
             onArc2 = (angle2 >= arc.angle_end_ || angle2 <= arc.angle_start_);
         } else {
-            onArc1 = (angle1 <= arc.angle_start_ || angle1 >= arc.angle_end_);
-            onArc2 = (angle2 <= arc.angle_start_ || angle2 >= arc.angle_end_);
+            onArc1 = (angle1 <= arc.angle_start_ && angle1 >= arc.angle_end_);
+            onArc2 = (angle2 <= arc.angle_start_ && angle2 >= arc.angle_end_);
         }
     } else {
         if (arc.angle_end_ < arc.angle_start_) {

@@ -79,7 +79,7 @@ struct TraceCfg {
     bool is_terminal = true;
     float translational_slew_rate = 5.0;
     float angular_slew_rate = 5.0;
-    double look_ahead_dist = 3.0;
+    double look_ahead_dist = 5.0;
 };
 extern TraceCfg default_trace_cfg;
 
