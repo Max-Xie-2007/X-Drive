@@ -215,11 +215,14 @@ void traceWithRelativeHeading(
     }();
     Vector prev_translational_output = myPosition.getTranslationalVelocity();
     double prev_angular_error = [&]() {
-        if (myPosition.getTranslationalVelocity().len() < 1e-4) {
+        const Circle intersection_circle(myPosition.getCenterPos(),
+                                         trace_cfg.look_ahead_dist);
+        const Point target_position = intersection_circle.findIntersection(path);
+        if (isnan(target_position.x_)) {
             return 0.0;
         } else {
-            return myPosition.getTranslationalVelocity().angle() + target_heading_offset -
-                   myPosition.getHeading();
+            return (target_position - myPosition.getCenterPos()).angle() +
+                   target_heading_offset - myPosition.getHeading();
         }
     }();
     double prev_angular_output = myPosition.getAngularVelocity();
@@ -250,12 +253,12 @@ void traceWithRelativeHeading(
                                          trace_cfg.look_ahead_dist);
         const Point target_position = intersection_circle.findIntersection(path);
         double target_heading = [&]() {
-            if (close && !trace_cfg.is_terminal) {
+            if (close) {
                 return terminal_target_heading;
-            } else if (myPosition.getTranslationalVelocity().len() < 1e-4) {
+            } else if (isnan(target_position.x_)) {
                 return myPosition.getHeading();
             } else {
-                return myPosition.getTranslationalVelocity().angle() +
+                return (target_position - myPosition.getCenterPos()).angle() +
                        target_heading_offset;
             }
         }();
