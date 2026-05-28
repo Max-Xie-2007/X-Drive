@@ -19,6 +19,9 @@ Vector Point::operator-(const Point& other) const {
 Point Point::operator-(const Vector& vec) const {
     return Point(x_ - vec.dx_, y_ - vec.dy_);
 }
+bool Point::operator==(const Point& other) const {
+    return std::abs(x_ - other.x_) < 1e-9 && std::abs(y_ - other.y_) < 1e-9;
+}
 Vector Point::to(const Segment& seg) const {
     Vector ap = Vector(seg.start_, *this);
     Vector ab = Vector(seg.start_, seg.end_);

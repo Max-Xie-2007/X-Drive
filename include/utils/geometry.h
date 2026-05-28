@@ -45,6 +45,12 @@ struct Point {
      */
     Point operator-(const Vector& vec) const;
     /**
+     * @brief 判断两点是否相等
+     * @param other 另一个点
+     * @return 是否相等
+     */
+    bool operator==(const Point& other) const;
+    /**
      * @brief 计算点到线段的距离
      * @param seg 线段
      * @return 距离
