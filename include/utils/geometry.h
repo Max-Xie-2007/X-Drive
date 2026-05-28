@@ -158,9 +158,9 @@ struct Vector {
  * @brief 线段类，单位为英寸
  */
 struct Segment {
-    Point start_, end_;
-    double k_, b_;
-    double x0_;
+    Point start_ = Point(), end_ = Point();
+    double k_ = 0, b_ = 0;
+    double x0_ = 0;
 
     Segment(const Point& start = Point(), const Point& end = Point());
     Segment(double k = 0, double b = 0);
@@ -176,9 +176,9 @@ struct Segment {
  * @brief 圆类，单位为英寸
  */
 struct Circle {
-    Point center_;
-    double r_;
-    double D_, E_, F_;
+    Point center_ = Point();
+    double r_ = 0.0;
+    double D_ = 0, E_ = 0, F_ = 0;
 
     Circle(Point center_ = Point(), double r_ = 0.0);
     Circle(double d_ = 0, double e_ = 0, double f_ = 0);
@@ -209,13 +209,13 @@ struct Circle {
  * @brief 圆弧类，单位为英寸
  */
 struct Arc {
-    Point center_;
-    double r_;
-    double angle_start_, angle_end_;
-    Point start_, end_;
-    bool clockwise_;
-    bool large_arc_;
-    double D_, E_, F_;
+    Point center_ = Point();
+    double r_ = 0.0;
+    double angle_start_ = 0, angle_end_ = 0;
+    Point start_ = Point(), end_ = Point();
+    bool clockwise_ = false;
+    bool large_arc_ = false;
+    double D_ = 0, E_ = 0, F_ = 0;
     /**
      * @brief 圆弧构造函数
      * @param r_ 半径
