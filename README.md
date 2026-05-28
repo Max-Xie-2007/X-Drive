@@ -42,3 +42,7 @@
 ## 其他事项
 
 - 使用常量时从`params.h`中调用，不要直接写数字（尤其是线程刷新）
+
+## 待办事项
+
+- [ ] 调整`traceWithRelativeHeading()`的目标朝向为与`intersection_point`的连线的角度

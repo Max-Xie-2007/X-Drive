@@ -47,7 +47,8 @@ void chassisDebug() {
                                myPosition.getCenterPos() + Vector(0, 24));
         // Arc path = Arc(myPosition.getCenterPos(),
         //                myPosition.getCenterPos() + Vector(24, 24), 24, false, false);
-        traceWithGlobalHeading(path, 0.0, 10000);
+        // traceWithGlobalHeading(path, 0.0, 10000);
+        traceWithRelativeHeading(path, 90.0, 0.0, 10000);
     }
 }
 

@@ -187,7 +187,7 @@ void traceWithGlobalHeading(
  */
 template <typename T>
 void traceWithRelativeHeading(
-    const T& path, double terminal_target_heading, double target_heading_offset = 0,
+    const T& path, double terminal_target_heading, double target_heading_offset = 0.0,
     int time_limit = 2000, const TraceCfg& trace_cfg = default_trace_cfg,
     const PIDParam translational_pid = default_trace_translational,
     const PIDParam angular_pid = default_trace_angular,
@@ -216,7 +216,7 @@ void traceWithRelativeHeading(
     Vector prev_translational_output = myPosition.getTranslationalVelocity();
     double prev_angular_error = [&]() {
         if (myPosition.getTranslationalVelocity().len() < 1e-4) {
-            return 0;
+            return 0.0;
         } else {
             return myPosition.getTranslationalVelocity().angle() + target_heading_offset -
                    myPosition.getHeading();

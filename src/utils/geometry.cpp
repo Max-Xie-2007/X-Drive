@@ -251,8 +251,8 @@ Point Circle::findIntersection(const Arc& arc) const {
     }
 
     if (onArc1 && onArc2) {
-        double angleDis1 = std::abs(angle1 - arc.angle_end_);
-        double angleDis2 = std::abs(angle2 - arc.angle_end_);
+        double angleDis1 = fabs(degNorm180(angle1 - arc.angle_end_));
+        double angleDis2 = fabs(degNorm180(angle2 - arc.angle_end_));
         return (angleDis1 < angleDis2) ? p1 : p2;
     } else if (onArc1) {
         return p1;
