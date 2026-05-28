@@ -23,10 +23,11 @@ bool Point::operator==(const Point& other) const {
     return std::abs(x_ - other.x_) < 1e-9 && std::abs(y_ - other.y_) < 1e-9;
 }
 Vector Point::to(const Segment& seg) const {
-    Vector ap = Vector(seg.start_, *this);
-    Vector ab = Vector(seg.start_, seg.end_);
-    double ab_len_sq = ab.len() * ab.len();
-    double t = ap.dot(ab) / ab_len_sq;
+    const Vector ap = Vector(seg.start_, *this);
+    const Vector ab = Vector(seg.start_, seg.end_);
+    const double ab_len_sq = ab.len() * ab.len();
+    if (ab_len_sq < 1e-9) return Vector(*this, seg.start_);
+    const double t = ap.dot(ab) / ab_len_sq;
     if (t < 0.0)
         return Vector(*this, seg.start_);
     else if (t > 1.0)
@@ -35,32 +36,31 @@ Vector Point::to(const Segment& seg) const {
     return Vector(*this, projection);
 }
 Vector Point::to(const Arc& arc) const {
-    Vector oc = Vector(arc.center_, *this);
-    Vector on = oc.norm() * arc.r_;
-    Point projection = Point(arc.center_.x_ + on.dx_, arc.center_.y_ + on.dy_);
+    const Vector oc = Vector(arc.center_, *this);
+    const Vector on = oc.norm() * arc.r_;
+    const Point projection = Point(arc.center_.x_ + on.dx_, arc.center_.y_ + on.dy_);
     // 检查投影点是否在圆弧上
-    double projAngle = atan2(on.dy_, on.dx_) * 180.0 / M_PI;
-    projAngle = degNorm360(projAngle);
-    bool onArc = false;
+    const double proj_angle = degNorm360(rad2deg(atan2(on.dy_, on.dx_)));
+    bool on_arc = false;
     if (arc.clockwise_) {
         if (arc.angle_end_ > arc.angle_start_) {
-            onArc = (projAngle >= arc.angle_end_ || projAngle <= arc.angle_start_);
+            on_arc = (proj_angle >= arc.angle_end_ || proj_angle <= arc.angle_start_);
         } else {
-            onArc = (projAngle <= arc.angle_start_ && projAngle >= arc.angle_end_);
+            on_arc = (proj_angle <= arc.angle_start_ && proj_angle >= arc.angle_end_);
         }
     } else {
         if (arc.angle_end_ < arc.angle_start_) {
-            onArc = (projAngle >= arc.angle_start_ || projAngle <= arc.angle_end_);
+            on_arc = (proj_angle >= arc.angle_start_ || proj_angle <= arc.angle_end_);
         } else {
-            onArc = (projAngle >= arc.angle_start_ && projAngle <= arc.angle_end_);
+            on_arc = (proj_angle >= arc.angle_start_ && proj_angle <= arc.angle_end_);
         }
     }
-    if (onArc) {
+    if (on_arc) {
         return Vector(*this, projection);
     } else {
-        double disToStart = disBetween(*this, arc.start_);
-        double disToEnd = disBetween(*this, arc.end_);
-        if (disToStart < disToEnd) {
+        const double dis_to_start = disBetween(*this, arc.start_);
+        const double dis_to_end = disBetween(*this, arc.end_);
+        if (dis_to_start < dis_to_end) {
             return Vector(*this, arc.start_);
         } else {
             return Vector(*this, arc.end_);
@@ -70,7 +70,7 @@ Vector Point::to(const Arc& arc) const {
 
 // 向量
 Vector::Vector(double angle) {
-    double r = deg2rad(angle);
+    const double r = deg2rad(angle);
     dx_ = cos(r);
     dy_ = sin(r);
 }
@@ -170,26 +170,26 @@ Point Circle::findIntersection(const Segment& seg) const {
         B = E_;
         C = F_ + seg.x0_ * (seg.x0_ + D_);
     }
-    double delta = B * B - 4 * A * C;
-    if (delta < 0) return Point(NAN, NAN); // 无交点
+    const double delta = B * B - 4 * A * C;
+    if (delta < -1e-7) return Point(NAN, NAN); // 无交点
 
-    double sqrtDelta = sqrt(delta);
+    const double sqrt_delta = sqrt(std::max(0.0, delta));
     double x1, y1, x2, y2;
     if (!std::isnan(seg.k_)) {
-        x1 = (-B + sqrtDelta) / (2 * A);
+        x1 = (-B + sqrt_delta) / (2 * A);
         y1 = seg.k_ * x1 + seg.b_;
-        x2 = (-B - sqrtDelta) / (2 * A);
+        x2 = (-B - sqrt_delta) / (2 * A);
         y2 = seg.k_ * x2 + seg.b_;
     } else {
         x1 = seg.x0_;
-        y1 = (-B + sqrtDelta) / (2 * A);
+        y1 = (-B + sqrt_delta) / (2 * A);
         x2 = seg.x0_;
-        y2 = (-B - sqrtDelta) / (2 * A);
+        y2 = (-B - sqrt_delta) / (2 * A);
     }
-    Point p1 = Point(x1, y1);
-    Point p2 = Point(x2, y2);
-    double dis1 = disBetween(p1, seg.end_);
-    double dis2 = disBetween(p2, seg.end_);
+    const Point p1 = Point(x1, y1);
+    const Point p2 = Point(x2, y2);
+    const double dis1 = disBetween(p1, seg.end_);
+    const double dis2 = disBetween(p2, seg.end_);
     return (dis1 < dis2) ? p1 : p2;
 }
 Point Circle::findIntersection(const Arc& arc) const {
@@ -209,54 +209,54 @@ Point Circle::findIntersection(const Arc& arc) const {
         B = E_;
         C = F_ + _seg.x0_ * (_seg.x0_ + D_);
     }
-    double delta = B * B - 4 * A * C;
-    if (delta < 0) return Point(NAN, NAN); // 无交点
+    const double delta = B * B - 4 * A * C;
+    if (delta < -1e-7) return Point(NAN, NAN); // 无交点
 
-    double sqrtDelta = sqrt(delta);
+    const double sqrt_delta = sqrt(std::max(0.0, delta));
     double x1, y1, x2, y2;
     if (!std::isnan(_seg.k_)) {
-        x1 = (-B + sqrtDelta) / (2 * A);
+        x1 = (-B + sqrt_delta) / (2 * A);
         y1 = _seg.k_ * x1 + _seg.b_;
-        x2 = (-B - sqrtDelta) / (2 * A);
+        x2 = (-B - sqrt_delta) / (2 * A);
         y2 = _seg.k_ * x2 + _seg.b_;
     } else {
         x1 = _seg.x0_;
-        y1 = (-B + sqrtDelta) / (2 * A);
+        y1 = (-B + sqrt_delta) / (2 * A);
         x2 = _seg.x0_;
-        y2 = (-B - sqrtDelta) / (2 * A);
+        y2 = (-B - sqrt_delta) / (2 * A);
     }
-    Point p1 = Point(x1, y1);
-    Point p2 = Point(x2, y2);
-    double angle1 =
+    const Point p1 = Point(x1, y1);
+    const Point p2 = Point(x2, y2);
+    const double angle1 =
         degNorm360(rad2deg(atan2(p1.y_ - arc.center_.y_, p1.x_ - arc.center_.x_)));
-    double angle2 =
+    const double angle2 =
         degNorm360(rad2deg(atan2(p2.y_ - arc.center_.y_, p2.x_ - arc.center_.x_)));
-    bool onArc1 = false, onArc2 = false;
+    bool on_arc1 = false, on_arc2 = false;
     if (arc.clockwise_) {
         if (arc.angle_end_ > arc.angle_start_) {
-            onArc1 = (angle1 >= arc.angle_end_ || angle1 <= arc.angle_start_);
-            onArc2 = (angle2 >= arc.angle_end_ || angle2 <= arc.angle_start_);
+            on_arc1 = (angle1 >= arc.angle_end_ || angle1 <= arc.angle_start_);
+            on_arc2 = (angle2 >= arc.angle_end_ || angle2 <= arc.angle_start_);
         } else {
-            onArc1 = (angle1 <= arc.angle_start_ && angle1 >= arc.angle_end_);
-            onArc2 = (angle2 <= arc.angle_start_ && angle2 >= arc.angle_end_);
+            on_arc1 = (angle1 <= arc.angle_start_ && angle1 >= arc.angle_end_);
+            on_arc2 = (angle2 <= arc.angle_start_ && angle2 >= arc.angle_end_);
         }
     } else {
         if (arc.angle_end_ < arc.angle_start_) {
-            onArc1 = (angle1 >= arc.angle_start_ || angle1 <= arc.angle_end_);
-            onArc2 = (angle2 >= arc.angle_start_ || angle2 <= arc.angle_end_);
+            on_arc1 = (angle1 >= arc.angle_start_ || angle1 <= arc.angle_end_);
+            on_arc2 = (angle2 >= arc.angle_start_ || angle2 <= arc.angle_end_);
         } else {
-            onArc1 = (angle1 >= arc.angle_start_ && angle1 <= arc.angle_end_);
-            onArc2 = (angle2 >= arc.angle_start_ && angle2 <= arc.angle_end_);
+            on_arc1 = (angle1 >= arc.angle_start_ && angle1 <= arc.angle_end_);
+            on_arc2 = (angle2 >= arc.angle_start_ && angle2 <= arc.angle_end_);
         }
     }
 
-    if (onArc1 && onArc2) {
-        double angleDis1 = fabs(degNorm180(angle1 - arc.angle_end_));
-        double angleDis2 = fabs(degNorm180(angle2 - arc.angle_end_));
-        return (angleDis1 < angleDis2) ? p1 : p2;
-    } else if (onArc1) {
+    if (on_arc1 && on_arc2) {
+        const double angle_dis1 = fabs(degNorm180(angle1 - arc.angle_end_));
+        const double angle_dis2 = fabs(degNorm180(angle2 - arc.angle_end_));
+        return (angle_dis1 < angle_dis2) ? p1 : p2;
+    } else if (on_arc1) {
         return p1;
-    } else if (onArc2) {
+    } else if (on_arc2) {
         return p2;
     } else {
         return Point(NAN, NAN);
@@ -267,11 +267,12 @@ Point Circle::findIntersection(const Arc& arc) const {
 Arc::Arc(const Point& start, const Point& end, double r, bool clockwise, bool large_arc)
     : r_(r), start_(start), end_(end), clockwise_(clockwise), large_arc_(large_arc) {
     // 计算圆心坐标
-    Point mid = Point((start_.x_ + end_.x_) / 2, (start_.y_ + end_.y_) / 2);
-    double q = disBetween(start_, end_) / 2;
-    double h = sqrt(r * r - q * q);
-    double dx = h * (end_.x_ - start_.x_) / (2 * q);
-    double dy = h * (end_.y_ - start_.y_) / (2 * q);
+    const Point mid = Point((start_.x_ + end_.x_) / 2, (start_.y_ + end_.y_) / 2);
+    const double q = disBetween(start_, end_) / 2;
+    if (r_ < q) r_ = q; // 修复传入极值 r < q 时无解的问题
+    const double h = sqrt(r_ * r_ - q * q);
+    const double dx = (q > 1e-9) ? (h * (end_.y_ - start_.y_) / (2 * q)) : 0.0;
+    const double dy = (q > 1e-9) ? (h * (end_.x_ - start_.x_) / (2 * q)) : 0.0;
     if (clockwise ^ large_arc) { // 异或
         center_ = Point(mid.x_ + dx, mid.y_ - dy);
     } else {
@@ -284,7 +285,7 @@ Arc::Arc(const Point& start, const Point& end, double r, bool clockwise, bool la
     // 计算三参
     D_ = -2 * center_.x_;
     E_ = -2 * center_.y_;
-    F_ = center_.x_ * center_.x_ + center_.y_ * center_.y_ - r * r;
+    F_ = center_.x_ * center_.x_ + center_.y_ * center_.y_ - r_ * r_;
 }
 Arc::Arc(const Point& center, double r, double angle_start, double angle_end,
          bool clockwise)
@@ -300,6 +301,6 @@ Arc::Arc(const Point& center, double r, double angle_start, double angle_end,
     E_ = -2 * center.y_;
     F_ = center.x_ * center.x_ + center.y_ * center.y_ - r * r;
     // 计算是否为大弧
-    double angleDiff = degNorm360(angle_end_ - angle_start_);
+    const double angleDiff = degNorm360(angle_end_ - angle_start_);
     large_arc_ = clockwise_ ^ (angleDiff > 180.0);
 }
