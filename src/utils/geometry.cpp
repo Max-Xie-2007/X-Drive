@@ -4,6 +4,7 @@
 #include <cmath>
 #include <iostream>
 #include <stdlib.h>
+
 double disBetween(const Point& start, const Point& end) {
     return sqrt((start.x_ - end.x_) * (start.x_ - end.x_) +
                 (start.y_ - end.y_) * (start.y_ - end.y_));
@@ -84,10 +85,10 @@ Vector Vector::operator+(const Vector& other) const {
 Vector Vector::operator-(const Vector& other) const {
     return Vector(dx_ - other.dx_, dy_ - other.dy_);
 }
-Vector Vector::operator*(const double& scalar) const {
+Vector Vector::operator*(double scalar) const {
     return Vector(dx_ * scalar, dy_ * scalar);
 }
-Vector Vector::operator/(const double& scalar) const {
+Vector Vector::operator/(double scalar) const {
     return Vector(dx_ / scalar, dy_ / scalar);
 }
 double Vector::dot(const Vector& other) const {

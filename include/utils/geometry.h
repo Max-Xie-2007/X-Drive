@@ -107,8 +107,8 @@ struct Vector {
      * @param scalar 标量
      * @return 新向量
      */
-    Vector operator*(const double& scalar) const;
-    Vector operator/(const double& scalar) const;
+    Vector operator*(double scalar) const;
+    Vector operator/(double scalar) const;
     /**
      * @brief 向量点积
      * @param other 另一个向量

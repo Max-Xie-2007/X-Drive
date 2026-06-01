@@ -1,6 +1,6 @@
 #include "chassis/positioning.h"
+#include "params.h"
 #include "robot-config.h"
-#include "utils/params.h"
 using namespace vex;
 
 void threadUpdatePosition() {
@@ -36,7 +36,7 @@ OrthogonalOdometry::OrthogonalOdometry(rotation& rotation_left, rotation& rotati
     intersection_pos_ = center_pos_ + hardware.odometer.offset.rotate(0);
 }
 
-void OrthogonalOdometry::reset(const Point& center_pos, const double& heading) {
+void OrthogonalOdometry::reset(const Point& center_pos, double heading) {
     // Timer reset
     position_update_timer_.reset();
     last_time_ = 0;

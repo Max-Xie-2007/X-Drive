@@ -2,90 +2,98 @@
 
 #include <cmath>
 #include <stdlib.h>
-int sgn(const double& val) { return (val > 0) - (val < 0); }
 
-double sat(const double& val, const double& limit) {
-    if (limit < 0) return 0;
-    if (std::abs(val) > limit)
-        return sgn(val) * limit;
+int sgn(double val) { return (val > 0) - (val < 0); }
+double clamp(double val, double min_val, double max_val) {
+    if (min_val > max_val) return min_val;
+    if (val < min_val)
+        return min_val;
+    else if (val > max_val)
+        return max_val;
     else
         return val;
 }
-Vector sat(const Vector& val, const double& limit) {
+double sat(double val, double limit) {
+    if (limit < 0) return 0;
+    return clamp(val, -limit, limit);
+}
+Vector sat(const Vector& val, double limit) {
     if (limit < 0) return Vector(0, 0);
     if (val.len() > limit)
         return val.norm() * limit;
     else
         return val;
 }
-
-double deadZone(const double& val, const double& limit) {
+double deadZone(double val, double limit) {
     if (limit < 0) return 0;
     if (std::abs(val) < limit)
         return 0;
     else
         return val;
 }
-Vector deadZone(const Vector& val, const double& limit) {
+Vector deadZone(const Vector& val, double limit) {
     if (limit < 0) return Vector(0, 0);
     if (val.len() < limit)
         return Vector(0, 0);
     else
         return val;
 }
-double slew(const double& val, const double& prev_val, const double& slew_rate) {
-    double delta = val - prev_val;
-    if (std::abs(delta) > slew_rate)
-        return prev_val + sgn(delta) * slew_rate;
-    else
-        return val;
+double slew(double val, double prev_val, double slew_rate) {
+    if (slew_rate < 0) return val;
+    return clamp(val, prev_val - slew_rate, prev_val + slew_rate);
 }
-Vector slew(const Vector& val, const Vector& prev_val, const double& slew_rate) {
+Vector slew(const Vector& val, const Vector& prev_val, double slew_rate) {
     Vector delta = val - prev_val;
-    if (delta.len() > slew_rate)
-        return prev_val + delta.norm() * slew_rate;
-    else
-        return val;
+    delta = sat(delta, slew_rate);
+    return prev_val + delta;
 }
-
-double inch2cm(const double& inch) { return inch * 2.54; }
-double cm2inch(const double& cm) { return cm / 2.54; }
-
-double deg2rad(const double& angle) { return angle * M_PI / 180.0; }
-double rad2deg(const double& angle) { return angle * 180.0 / M_PI; }
-
-double degNorm360(const double& angle) {
-    double norm_angle = angle;
-    while (norm_angle >= 360)
-        norm_angle -= 360;
-    while (norm_angle < 0)
-        norm_angle += 360;
-    return norm_angle;
-}
-
-double degNorm180(const double& angle) {
-    double norm_angle = angle;
-    while (norm_angle > 180)
-        norm_angle -= 360;
-    while (norm_angle <= -180)
-        norm_angle += 360;
-    return norm_angle;
-}
-
-double radNorm(const double& angle) {
-    double norm_angle = angle;
-    while (norm_angle >= 2 * M_PI)
-        norm_angle -= 2 * M_PI;
-    while (norm_angle < 0)
-        norm_angle += 2 * M_PI;
-    return norm_angle;
-}
-
-double map(const double& x, const double& in_min, const double& in_max,
-           const double& out_min, const double& out_max) {
+double map(double x, double in_min, double in_max, double out_min, double out_max) {
+    if (std::fabs(in_max - in_min) < 1e-10) return out_min;
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
-
-double pct2volt(const double& pct) {
-    return sgn(pct) * map(std::abs(pct), 0, 100, 0.3, 12.7);
+double map(double x, double in_min, double in_max, double out_min, double out_max,
+           double power) {
+    if (std::fabs(in_max - in_min) < 1e-10) return out_min;
+    const double base = (x - in_min) / (in_max - in_min);
+    return sgn(base) * pow(std::fabs(base), power) * (out_max - out_min) + out_min;
 }
+
+double inch2cm(double inch) { return inch * 2.54; }
+double cm2inch(double cm) { return cm / 2.54; }
+
+double deg2rad(double angle) { return angle * M_PI / 180.0; }
+double rad2deg(double angle) { return angle * 180.0 / M_PI; }
+
+double degNorm360(double angle) {
+    while (angle >= 360)
+        angle -= 360;
+    while (angle < 0)
+        angle += 360;
+    return angle;
+}
+
+double degNorm180(double angle) {
+    while (angle >= 180)
+        angle -= 360;
+    while (angle < -180)
+        angle += 360;
+    return angle;
+}
+
+double radNorm2Pi(double angle) {
+    while (angle >= 2 * M_PI)
+        angle -= 2 * M_PI;
+    while (angle < 0)
+        angle += 2 * M_PI;
+    return angle;
+}
+
+double radNormPi(double angle) {
+    while (angle >= M_PI)
+        angle -= 2 * M_PI;
+    while (angle < -M_PI)
+        angle += 2 * M_PI;
+    return angle;
+}
+
+double pct2volt(double pct) { return sgn(pct) * map(std::abs(pct), 0, 100, 0.3, 12.7); }

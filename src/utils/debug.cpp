@@ -4,10 +4,10 @@
 #include "chassis/positioning.h"
 #include "controller.h"
 #include "driver-control.h"
+#include "params.h"
 #include "robot-config.h"
 #include "ui/ui-brain.h"
 #include "ui/ui-controller.h"
-#include "utils/params.h"
 #include "vex.h"
 using namespace vex;
 
@@ -43,8 +43,8 @@ void chassisDebug() {
     //     reach(myPosition.getCenterPos(), myPosition.getHeading() - 180.0);
     // }
     if (Down) {
-        Segment path = Segment(myPosition.getCenterPos(),
-                               myPosition.getCenterPos() + Vector(0, 24));
+        Segment path =
+            Segment(myPosition.getCenterPos(), myPosition.getCenterPos() + Vector(0, 24));
         // Arc path = Arc(myPosition.getCenterPos(),
         //                myPosition.getCenterPos() + Vector(24, 24), 24, false, false);
         // traceWithGlobalHeading(path, 0.0, 10000);

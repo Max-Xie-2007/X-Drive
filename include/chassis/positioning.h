@@ -50,7 +50,7 @@ struct OrthogonalOdometry {
      * @param center_pos 待设坐标
      * @param heading 待设航向
      */
-    void reset(const Point& center_pos, const double& heading);
+    void reset(const Point& center_pos, double heading);
     /**
      * @brief 重设坐标
      * @param center_pos 待设坐标

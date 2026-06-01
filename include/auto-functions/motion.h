@@ -2,10 +2,10 @@
 #define AUTO_FUNCTIONS_MOTION_H
 
 #include "chassis/driving.h"
+#include "params.h"
 #include "robot-config.h"
 #include "utils/exit-condition.h"
 #include "utils/geometry.h"
-#include "utils/params.h"
 #include "utils/pid.h"
 #include "vex.h"
 

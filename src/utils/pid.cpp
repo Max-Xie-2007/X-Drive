@@ -1,8 +1,8 @@
 #include "utils/pid.h"
+#include "params.h"
 #include "ui/ui-brain.h"
 #include "ui/ui-controller.h"
 #include "utils/calc.h"
-#include "utils/params.h"
 PID1D::PID1D(const PIDParam& param) : PIDParam(param) {}
 void PID1D::setParam(const PIDParam& param) {
     kP_ = param.kP_;

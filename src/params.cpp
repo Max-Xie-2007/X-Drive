@@ -1,4 +1,4 @@
-#include "utils/params.h"
+#include "params.h"
 
 const Cycle cycle = {.auton = 5,
                      .position = 5,

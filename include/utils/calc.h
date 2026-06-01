@@ -1,12 +1,21 @@
 #ifndef CALC_H
 #define CALC_H
-#include "utils/geometry.h"
+#include "geometry.h"
 /**
  * @brief 计算符号函数
  * @param val 输入值
  * @return 正数返回1，负数返回-1，零返回0
  */
-int sgn(const double& val);
+int sgn(double val);
+/**
+ * @brief 钳制函数
+ * @param val 输入值
+ * @param min_val 最小值
+ * @param max_val 最大值
+ * @return 钳制后的值
+ * @note 若 min_val > max_val 则返回 min_val
+ */
+double clamp(double val, double min_val, double max_val);
 /**
  * @brief 饱和函数
  * @param val 输入值
@@ -14,7 +23,7 @@ int sgn(const double& val);
  * @return 饱和后的值
  * @note 若 limit 为负则返回 0
  */
-double sat(const double& val, const double& limit);
+double sat(double val, double limit);
 /**
  * @brief 向量饱和函数
  * @param val 输入向量
@@ -22,7 +31,7 @@ double sat(const double& val, const double& limit);
  * @return 饱和后的向量(模长不超过 limit，方向不变)
  * @note 若 limit 为负则返回 0
  */
-Vector sat(const Vector& val, const double& limit);
+Vector sat(const Vector& val, double limit);
 /**
  * @brief 死区函数
  * @param val 输入值
@@ -30,7 +39,7 @@ Vector sat(const Vector& val, const double& limit);
  * @return 0 或死区外的值
  * @note 若 limit 为负则返回 0
  */
-double deadZone(const double& val, const double& limit);
+double deadZone(double val, double limit);
 /**
  * @brief 向量死区函数
  * @param val 输入向量
@@ -38,7 +47,7 @@ double deadZone(const double& val, const double& limit);
  * @return 零向量或模长在死区外的向量
  * @note 若 limit 为负则返回 0
  */
-Vector deadZone(const Vector& val, const double& limit);
+Vector deadZone(const Vector& val, double limit);
 /**
  * @brief 平滑函数
  * @param val 输入值
@@ -46,7 +55,7 @@ Vector deadZone(const Vector& val, const double& limit);
  * @param slew_rate 最大变化率(%/ms)
  * @return 平滑后的值
  */
-double slew(const double& val, const double& prev_val, const double& slew_rate);
+double slew(double val, double prev_val, double slew_rate);
 /**
  * @brief 向量平滑函数
  * @param val 输入向量
@@ -54,50 +63,7 @@ double slew(const double& val, const double& prev_val, const double& slew_rate);
  * @param slew_rate 最大变化率(%/ms)
  * @return 平滑后的向量
  */
-Vector slew(const Vector& val, const Vector& prev_val, const double& slew_rate);
-/**
- * @brief 英寸转厘米
- * @param inch 英寸值
- * @return 厘米值
- */
-double inch2cm(const double& inch);
-/**
- * @brief 厘米转英寸
- * @param cm 厘米值
- * @return 英寸值
- */
-double cm2inch(const double& cm);
-/**
- * @brief 角度归一化，调整到[0‌°,360‌°‌)
- * @param angle 度数
- * @return 归一化后的角度值
- */
-double degNorm360(const double& angle);
-/**
- * @brief 角度归一化，调整到(-180‌°,180‌°]
- * @param angle 度数
- * @return 归一化后的角度值
- */
-double degNorm180(const double& angle);
-/**
- * @brief 弧度归一化，调整到[0,2π)
- * @param angle 弧度值
- * @return 归一化后的弧度值
- */
-double radNorm(const double& angle);
-/**
- * @brief 度数转弧度
- * @param angle 度数
- * @return 弧度值
- */
-double deg2rad(const double& angle);
-/**
- * @brief 弧度转度数
- * @param angle 弧度值
- * @return 度数
- */
-double rad2deg(const double& angle);
-
+Vector slew(const Vector& val, const Vector& prev_val, double slew_rate);
 /**
  * @brief 线性映射函数
  * @param x 输入值
@@ -107,12 +73,72 @@ double rad2deg(const double& angle);
  * @param out_max 输出范围最大值
  * @return 映射后的输出值
  */
-double map(const double& x, const double& in_min, const double& in_max,
-           const double& out_min, const double& out_max);
+double map(double x, double in_min, double in_max, double out_min, double out_max);
+/**
+ * @brief 幂律映射函数
+ * @param x 输入值
+ * @param in_min 输入范围最小值
+ * @param in_max 输入范围最大值
+ * @param out_min 输出范围最小值
+ * @param out_max 输出范围最大值
+ * @param power 幂指数
+ * @return 映射后的输出值
+ */
+double map(double x, double in_min, double in_max, double out_min, double out_max,
+           double power);
+
+/**
+ * @brief 英寸转厘米
+ * @param inch 英寸值
+ * @return 厘米值
+ */
+double inch2cm(double inch);
+/**
+ * @brief 厘米转英寸
+ * @param cm 厘米值
+ * @return 英寸值
+ */
+double cm2inch(double cm);
+/**
+ * @brief 角度归一化，调整到[0‌°,360‌°‌)
+ * @param angle 度数
+ * @return 归一化后的角度值
+ */
+double degNorm360(double angle);
+/**
+ * @brief 角度归一化，调整到[-180‌°,180‌°)
+ * @param angle 度数
+ * @return 归一化后的角度值
+ */
+double degNorm180(double angle);
+/**
+ * @brief 弧度归一化，调整到[0,2π)
+ * @param angle 弧度值
+ * @return 归一化后的弧度值
+ */
+double radNorm2Pi(double angle);
+/**
+ * @brief 弧度归一化，调整到[-π,π)
+ * @param angle 弧度值
+ * @return 归一化后的弧度值
+ */
+double radNormPi(double angle);
+/**
+ * @brief 度数转弧度
+ * @param angle 度数
+ * @return 弧度值
+ */
+double deg2rad(double angle);
+/**
+ * @brief 弧度转度数
+ * @param angle 弧度值
+ * @return 度数
+ */
+double rad2deg(double angle);
 /**
  * @brief 百分比转电压
  * @param pct 百分比值(-100到100)
  * @return 电压值(VOLT)
  */
-double pct2volt(const double& pct);
+double pct2volt(double pct);
 #endif // CALC_H

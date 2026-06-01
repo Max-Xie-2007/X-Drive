@@ -18,12 +18,10 @@ class Label {
     std::string text_;
 
   public:
-    Label(const int& x, const int& y, const int& width, const int& height,
-          const std::string& text);
-    Label(const int& x, const int& y, const int& width, const int& height,
-          const float& num);
+    Label(int x, int y, int width, int height, const std::string& text);
+    Label(int x, int y, int width, int height, float num);
     void setText(const std::string& text) { text_ = text; }
-    void setText(const float& num) { text_ = float_to_string(num); }
+    void setText(float num) { text_ = float_to_string(num); }
     color getCurrentFillColor() { return current_fill_color_; }
     void render(const color& text_color, const color& border_color,
                 const color& fill_color, const fontType font = mono20);
@@ -39,8 +37,8 @@ class Button : public Label {
     std::function<void()> callback_ = NULL;
 
   public:
-    Button(const int& x, const int& y, const int& width, const int& height,
-           const std::string& text, const std::function<void()>& callback);
+    Button(int x, int y, int width, int height, const std::string& text,
+           const std::function<void()>& callback);
     color getCurrentFillColor() { return current_fill_color_; }
     void render(const color& text_color, const color& border_color,
                 const color& fill_color, const fontType font = mono20);

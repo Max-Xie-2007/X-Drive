@@ -2,13 +2,13 @@
 #include "autonomous.h"
 #include "controller.h"
 #include "globals.h"
+#include "params.h"
 #include "robot-config.h"
 #include "subsystem/painter.h"
 #include "ui/ui-brain.h"
 #include "ui/ui-controller.h"
 #include "utils/calc.h"
 #include "utils/debug.h"
-#include "utils/params.h"
 #include "vex.h"
 
 void driverControl() {

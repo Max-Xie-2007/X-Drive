@@ -1,8 +1,8 @@
 #ifndef DRIVING_H
 #define DRIVING_H
 
+#include "params.h"
 #include "utils/geometry.h"
-#include "utils/params.h"
 #include "vex.h"
 
 using namespace vex;

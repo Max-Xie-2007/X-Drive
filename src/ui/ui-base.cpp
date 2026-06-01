@@ -11,12 +11,10 @@ std::string float_to_string(double num, int decimal_digits) {
     return ss.str();
 }
 
-Label::Label(const int& x, const int& y, const int& width, const int& height,
-             const std::string& text)
+Label::Label(int x, int y, int width, int height, const std::string& text)
     : x_(x), y_(y), width_(width), height_(height), text_(text) {}
 
-Label::Label(const int& x, const int& y, const int& width, const int& height,
-             const float& num)
+Label::Label(int x, int y, int width, int height, float num)
     : x_(x), y_(y), width_(width), height_(height), text_(float_to_string(num)) {}
 void Label::render(const color& text_color, const color& border_color,
                    const color& fill_color, const fontType font) {
@@ -30,8 +28,8 @@ void Label::render(const color& text_color, const color& border_color,
                          text_.c_str());
 }
 
-Button::Button(const int& x, const int& y, const int& width, const int& height,
-               const std::string& text, const std::function<void()>& callback)
+Button::Button(int x, int y, int width, int height, const std::string& text,
+               const std::function<void()>& callback)
     : Label(x, y, width, height, text), callback_(callback) {}
 void Button::render(const color& text_color, const color& border_color,
                     const color& fill_color, const fontType font) {

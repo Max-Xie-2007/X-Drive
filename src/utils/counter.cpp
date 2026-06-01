@@ -1,7 +1,7 @@
 #include "utils/counter.h"
 #include "robot-config.h"
 
-#include "utils/params.h"
+#include "params.h"
 
 Counter::Counter(bool detected, int debounce_time)
     : count_(0), debounce_time_(debounce_time), prev_detected_(detected) {}
