@@ -51,44 +51,42 @@ void chassisDebug() {
     if (Down) {
         // Segment path1(myPosition.getCenterPos(),
         //               myPosition.getCenterPos() + Vector(0, 24));
-        // traceWithGlobalHeading(path1, 0.0, 3000, {.is_terminal = false},
+        // traceWithGlobalHeading(path1, 0.0, 3000, {.is_terminal = false, .min_translational_speed = 10},
         //                        default_trace_translational, default_trace_angular,
         //                        default_trace_deviational, {.exit_on_overshoot_ = true});
         Arc path2 = Arc(myPosition.getCenterPos(),
                         myPosition.getCenterPos() + Vector(24, 24), 24, true, false);
-        traceWithGlobalHeading(path2, 0.0, 3000, {.is_terminal = false},
+        traceWithGlobalHeading(path2, 0.0, 3000, {.is_terminal = false, .min_translational_speed = 40},
                                default_trace_translational, default_trace_angular,
                                default_trace_deviational, {.exit_on_overshoot_ = true});
         // Segment path3(myPosition.getCenterPos(),
         //               myPosition.getCenterPos() + Vector(24, 0));
-        // traceWithGlobalHeading(path3, 0.0, 3000, {.is_terminal = false},
+        // traceWithGlobalHeading(path3, 0.0, 3000, {.is_terminal = false, .min_translational_speed = 10},
         //                        default_trace_translational, default_trace_angular,
         //                        default_trace_deviational, {.exit_on_overshoot_ = true});
         Arc path4(myPosition.getCenterPos(), myPosition.getCenterPos() + Vector(24, -24),
                   24, true, false);
-        traceWithGlobalHeading(path4, 0.0, 3000, {.is_terminal = false},
+        traceWithGlobalHeading(path4, 0.0, 3000, {.is_terminal = false, .min_translational_speed = 40},
                                default_trace_translational, default_trace_angular,
                                default_trace_deviational, {.exit_on_overshoot_ = true});
         // Segment path5(myPosition.getCenterPos(),
         //               myPosition.getCenterPos() + Vector(0, -24));
-        // traceWithGlobalHeading(path5, 0.0, 3000, {.is_terminal = false},
+        // traceWithGlobalHeading(path5, 0.0, 3000, {.is_terminal = false, .min_translational_speed = 10},
         //                        default_trace_translational, default_trace_angular,
         //                        default_trace_deviational, {.exit_on_overshoot_ = true});
         Arc path6(myPosition.getCenterPos(), myPosition.getCenterPos() + Vector(-24, -24),
                   24, true, false);
-        traceWithGlobalHeading(path6, 0.0, 3000, {.is_terminal = false},
+        traceWithGlobalHeading(path6, 0.0, 3000, {.is_terminal = false, .min_translational_speed = 40},
                                default_trace_translational, default_trace_angular,
                                default_trace_deviational, {.exit_on_overshoot_ = true});
         // Segment path7(myPosition.getCenterPos(),
         //               myPosition.getCenterPos() + Vector(-24, 0));
-        // traceWithGlobalHeading(path7, 0.0, 3000, {.is_terminal = false},
+        // traceWithGlobalHeading(path7, 0.0, 3000, {.is_terminal = false, .min_translational_speed = 10},
         //                        default_trace_translational, default_trace_angular,
         //                        default_trace_deviational, {.exit_on_overshoot_ = true});
         Arc path8(myPosition.getCenterPos(), myPosition.getCenterPos() + Vector(-24, 24),
                   24, true, false);
-        traceWithGlobalHeading(path8, 0.0, 3000, {.is_terminal = false},
-                               default_trace_translational, default_trace_angular,
-                               default_trace_deviational, {.exit_on_overshoot_ = true});
+        traceWithGlobalHeading(path8, 0.0, 3000);
     }
 }
 
