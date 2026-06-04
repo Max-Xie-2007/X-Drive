@@ -84,7 +84,9 @@ struct TraceCfg {
 extern TraceCfg default_trace_cfg;
 
 extern PIDParam default_reach_translational;
-extern PIDParam default_reach_angular;
+extern PIDParam default_reach_angular_45;
+extern PIDParam default_reach_angular_90;
+extern PIDParam default_reach_angular_135;
 extern PIDParam default_trace_translational;
 extern PIDParam default_trace_angular;
 extern PIDParam default_trace_deviational;

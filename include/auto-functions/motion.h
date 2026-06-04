@@ -27,7 +27,7 @@ using namespace vex;
 void reach(const Point& target_pos, double target_heading, int time_limit = 2000,
            const ReachCfg& reach_cfg = default_reach_cfg,
            const PIDParam translational_pid = default_reach_translational,
-           const PIDParam angular_pid = default_reach_angular,
+           const PIDParam angular_pid = default_reach_angular_90,
            ExitConditionOptions translational_ec = default_translational_ec_opt,
            ExitConditionOptions angular_ec = default_angular_ec_opt);
 

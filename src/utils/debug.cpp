@@ -25,30 +25,70 @@ void chassisDebug() {
         reach(myPosition.getCenterPos() + Vector(24, 0), 0.0);
     }
     if (Left) {
-        reach(myPosition.getCenterPos(), myPosition.getHeading() + 45.0);
+        reach(myPosition.getCenterPos(), myPosition.getHeading() + 45.0, 2000,
+              default_reach_cfg, default_reach_translational, default_reach_angular_45);
     }
     if (Right) {
-        reach(myPosition.getCenterPos(), myPosition.getHeading() - 45.0);
+        reach(myPosition.getCenterPos(), myPosition.getHeading() - 45.0, 2000,
+              default_reach_cfg, default_reach_translational, default_reach_angular_45);
     }
-    // if (L1) {
-    //     reach(myPosition.getCenterPos(), myPosition.getHeading() + 90.0);
-    // }
-    // if (R1) {
-    //     reach(myPosition.getCenterPos(), myPosition.getHeading() - 90.0);
-    // }
-    // if (R2) {
-    //     reach(myPosition.getCenterPos(), myPosition.getHeading() + 180.0);
-    // }
-    // if (L2) {
-    //     reach(myPosition.getCenterPos(), myPosition.getHeading() - 180.0);
-    // }
+    if (L1) {
+        reach(myPosition.getCenterPos(), myPosition.getHeading() + 90.0, 2000,
+              default_reach_cfg, default_reach_translational, default_reach_angular_90);
+    }
+    if (R1) {
+        reach(myPosition.getCenterPos(), myPosition.getHeading() - 90.0, 2000,
+              default_reach_cfg, default_reach_translational, default_reach_angular_90);
+    }
+    if (R2) {
+        reach(myPosition.getCenterPos(), myPosition.getHeading() + 135.0, 2000,
+              default_reach_cfg, default_reach_translational, default_reach_angular_135);
+    }
+    if (L2) {
+        reach(myPosition.getCenterPos(), myPosition.getHeading() - 135.0, 2000,
+              default_reach_cfg, default_reach_translational, default_reach_angular_135);
+    }
     if (Down) {
-        Segment path =
-            Segment(myPosition.getCenterPos(), myPosition.getCenterPos() + Vector(0, 24));
-        // Arc path = Arc(myPosition.getCenterPos(),
-        //                myPosition.getCenterPos() + Vector(24, 24), 24, false, false);
-        // traceWithGlobalHeading(path, 0.0, 10000);
-        traceWithRelativeHeading(path, 90.0, 0.0, 10000);
+        // Segment path1(myPosition.getCenterPos(),
+        //               myPosition.getCenterPos() + Vector(0, 24));
+        // traceWithGlobalHeading(path1, 0.0, 3000, {.is_terminal = false},
+        //                        default_trace_translational, default_trace_angular,
+        //                        default_trace_deviational, {.exit_on_overshoot_ = true});
+        Arc path2 = Arc(myPosition.getCenterPos(),
+                        myPosition.getCenterPos() + Vector(24, 24), 24, true, false);
+        traceWithGlobalHeading(path2, 0.0, 3000, {.is_terminal = false},
+                               default_trace_translational, default_trace_angular,
+                               default_trace_deviational, {.exit_on_overshoot_ = true});
+        // Segment path3(myPosition.getCenterPos(),
+        //               myPosition.getCenterPos() + Vector(24, 0));
+        // traceWithGlobalHeading(path3, 0.0, 3000, {.is_terminal = false},
+        //                        default_trace_translational, default_trace_angular,
+        //                        default_trace_deviational, {.exit_on_overshoot_ = true});
+        Arc path4(myPosition.getCenterPos(), myPosition.getCenterPos() + Vector(24, -24),
+                  24, true, false);
+        traceWithGlobalHeading(path4, 0.0, 3000, {.is_terminal = false},
+                               default_trace_translational, default_trace_angular,
+                               default_trace_deviational, {.exit_on_overshoot_ = true});
+        // Segment path5(myPosition.getCenterPos(),
+        //               myPosition.getCenterPos() + Vector(0, -24));
+        // traceWithGlobalHeading(path5, 0.0, 3000, {.is_terminal = false},
+        //                        default_trace_translational, default_trace_angular,
+        //                        default_trace_deviational, {.exit_on_overshoot_ = true});
+        Arc path6(myPosition.getCenterPos(), myPosition.getCenterPos() + Vector(-24, -24),
+                  24, true, false);
+        traceWithGlobalHeading(path6, 0.0, 3000, {.is_terminal = false},
+                               default_trace_translational, default_trace_angular,
+                               default_trace_deviational, {.exit_on_overshoot_ = true});
+        // Segment path7(myPosition.getCenterPos(),
+        //               myPosition.getCenterPos() + Vector(-24, 0));
+        // traceWithGlobalHeading(path7, 0.0, 3000, {.is_terminal = false},
+        //                        default_trace_translational, default_trace_angular,
+        //                        default_trace_deviational, {.exit_on_overshoot_ = true});
+        Arc path8(myPosition.getCenterPos(), myPosition.getCenterPos() + Vector(-24, 24),
+                  24, true, false);
+        traceWithGlobalHeading(path8, 0.0, 3000, {.is_terminal = false},
+                               default_trace_translational, default_trace_angular,
+                               default_trace_deviational, {.exit_on_overshoot_ = true});
     }
 }
 

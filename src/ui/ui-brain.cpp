@@ -3,7 +3,7 @@
 #include "utils/pid.h"
 
 Interface current_interface = Interface::OPTIONS;
-PIDParamSet current_param_set = PIDParamSet::REACH;
+PIDParamSet current_param_set = PIDParamSet::REACH45;
 
 void setInterface(Interface interface) {
     if (current_interface == interface) return;
@@ -92,9 +92,9 @@ Label lbl_kd(330, 95, 150, 35, "kD");
 Label lbl_translational_kp(80, 129, 50, 37, default_reach_translational.kP_);
 Label lbl_translational_ki(230, 129, 50, 37, default_reach_translational.kI_);
 Label lbl_translational_kd(380, 129, 50, 37, default_reach_translational.kD_);
-Label lbl_angular_kp(80, 166, 50, 37, default_reach_angular.kP_);
-Label lbl_angular_ki(230, 166, 50, 37, default_reach_angular.kI_);
-Label lbl_angular_kd(380, 166, 50, 37, default_reach_angular.kD_);
+Label lbl_angular_kp(80, 166, 50, 37, default_reach_angular_90.kP_);
+Label lbl_angular_ki(230, 166, 50, 37, default_reach_angular_90.kI_);
+Label lbl_angular_kd(380, 166, 50, 37, default_reach_angular_90.kD_);
 Label lbl_deviational_kp(80, 203, 50, 37, default_trace_deviational.kP_);
 Label lbl_deviational_ki(230, 203, 50, 37, default_trace_deviational.kI_);
 Label lbl_deviational_kd(380, 203, 50, 37, default_trace_deviational.kD_);
@@ -108,7 +108,9 @@ const float angular_kd_step = 0.005;
 
 static PIDParam* selectedTranslationalPid() {
     switch (current_param_set) {
-        case PIDParamSet::REACH:
+        case PIDParamSet::REACH45:
+        case PIDParamSet::REACH90:
+        case PIDParamSet::REACH135:
             return &default_reach_translational;
         case PIDParamSet::TRACE:
             return &default_trace_translational;
@@ -117,8 +119,12 @@ static PIDParam* selectedTranslationalPid() {
 
 static PIDParam* selectedAngularPid() {
     switch (current_param_set) {
-        case PIDParamSet::REACH:
-            return &default_reach_angular;
+        case PIDParamSet::REACH45:
+            return &default_reach_angular_45;
+        case PIDParamSet::REACH90:
+            return &default_reach_angular_90;
+        case PIDParamSet::REACH135:
+            return &default_reach_angular_135;
         case PIDParamSet::TRACE:
             return &default_trace_angular;
     }
@@ -126,18 +132,28 @@ static PIDParam* selectedAngularPid() {
 
 static PIDParam* selectedDeviationalPid() {
     switch (current_param_set) {
-        case PIDParamSet::REACH:
+        case PIDParamSet::REACH45:
+        case PIDParamSet::REACH90:
+        case PIDParamSet::REACH135:
             return nullptr;
         case PIDParamSet::TRACE:
             return &default_trace_deviational;
     }
 }
 
-Button btn_param_set_reach(0, 40, 240, 50, "REACH", [] {
-    current_param_set = PIDParamSet::REACH;
+Button btn_param_set_reach_45(0, 40, 120, 50, "REACH45", [] {
+    current_param_set = PIDParamSet::REACH45;
     displayParams();
 });
-Button btn_param_set_trace(240, 40, 240, 50, "TRACE", [] {
+Button btn_param_set_reach_90(120, 40, 120, 50, "REACH90", [] {
+    current_param_set = PIDParamSet::REACH90;
+    displayParams();
+});
+Button btn_param_set_reach_135(240, 40, 120, 50, "REACH135", [] {
+    current_param_set = PIDParamSet::REACH135;
+    displayParams();
+});
+Button btn_param_set_trace(360, 40, 120, 50, "TRACE", [] {
     current_param_set = PIDParamSet::TRACE;
     displayParams();
 });
@@ -344,8 +360,12 @@ void displayParams() {
     lbl_ki.render(black, white, white);
     lbl_kd.render(black, white, white);
 
-    btn_param_set_reach.render(black, black,
-                               current_param_set == PIDParamSet::REACH ? green : white);
+    btn_param_set_reach_45.render(
+        black, black, current_param_set == PIDParamSet::REACH45 ? green : white);
+    btn_param_set_reach_90.render(
+        black, black, current_param_set == PIDParamSet::REACH90 ? green : white);
+    btn_param_set_reach_135.render(
+        black, black, current_param_set == PIDParamSet::REACH135 ? green : white);
     btn_param_set_trace.render(black, black,
                                current_param_set == PIDParamSet::TRACE ? green : white);
 
@@ -477,7 +497,12 @@ void threadUpdateBrainUI() {
                 displayInfo();
                 break;
             case Interface::PARAMS:
-                if (current_param_set != PIDParamSet::REACH) btn_param_set_reach.check();
+                if (current_param_set != PIDParamSet::REACH45)
+                    btn_param_set_reach_45.check();
+                if (current_param_set != PIDParamSet::REACH90)
+                    btn_param_set_reach_90.check();
+                if (current_param_set != PIDParamSet::REACH135)
+                    btn_param_set_reach_135.check();
                 if (current_param_set != PIDParamSet::TRACE) btn_param_set_trace.check();
 
                 btn_translational_kp_add.check();

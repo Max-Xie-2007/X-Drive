@@ -15,18 +15,30 @@ const Hardware hardware = {.odometer = {.rotation_dist_per_deg = 4 * 24 / 7348.9
 ReachCfg default_reach_cfg;
 TraceCfg default_trace_cfg;
 
-PIDParam default_reach_translational = {.kP_ = 10.0,
+PIDParam default_reach_translational = {.kP_ = 8.2,
                                         .kI_ = 0.0,
-                                        .kD_ = 0.0,
+                                        .kD_ = 0.75,
                                         .I_th_ = 0.0,
                                         .I_max_ = 0.0,
                                         .sign_flip_clear_ = true};
-PIDParam default_reach_angular = {.kP_ = 2.0,
-                                  .kI_ = 0.0,
-                                  .kD_ = 0.0,
-                                  .I_th_ = 0.0,
-                                  .I_max_ = 0.0,
-                                  .sign_flip_clear_ = true};
+PIDParam default_reach_angular_45 = {.kP_ = 2.0,
+                                     .kI_ = 0.0,
+                                     .kD_ = 0.12,
+                                     .I_th_ = 0.0,
+                                     .I_max_ = 0.0,
+                                     .sign_flip_clear_ = true};
+PIDParam default_reach_angular_90 = {.kP_ = 2.0,
+                                     .kI_ = 0.0,
+                                     .kD_ = 0.12,
+                                     .I_th_ = 0.0,
+                                     .I_max_ = 0.0,
+                                     .sign_flip_clear_ = true};
+PIDParam default_reach_angular_135 = {.kP_ = 2.0,
+                                      .kI_ = 0.0,
+                                      .kD_ = 0.12,
+                                      .I_th_ = 0.0,
+                                      .I_max_ = 0.0,
+                                      .sign_flip_clear_ = true};
 PIDParam default_trace_translational = {.kP_ = 10.0,
                                         .kI_ = 0.0,
                                         .kD_ = 0.0,
@@ -35,11 +47,11 @@ PIDParam default_trace_translational = {.kP_ = 10.0,
                                         .sign_flip_clear_ = true};
 PIDParam default_trace_angular = {.kP_ = 2.0,
                                   .kI_ = 0.0,
-                                  .kD_ = 0.0,
+                                  .kD_ = 0.12,
                                   .I_th_ = 0.0,
                                   .I_max_ = 0.0,
                                   .sign_flip_clear_ = true};
-PIDParam default_trace_deviational = {.kP_ = 20.0,
+PIDParam default_trace_deviational = {.kP_ = 10.0,
                                       .kI_ = 0.0,
                                       .kD_ = 0.0,
                                       .I_th_ = 0.0,
@@ -47,6 +59,6 @@ PIDParam default_trace_deviational = {.kP_ = 20.0,
                                       .sign_flip_clear_ = true};
 
 ExitConditionOptions default_translational_ec_opt = {
-    .err_tol_ = 0.5, .dvt_tol_ = 0.003, .jump_time_ = 50, .exit_on_overshoot_ = false};
+    .err_tol_ = 1.0, .dvt_tol_ = 3.0, .jump_time_ = 50, .exit_on_overshoot_ = false};
 ExitConditionOptions default_angular_ec_opt = {
-    .err_tol_ = 1.0, .dvt_tol_ = 0.003, .jump_time_ = 50, .exit_on_overshoot_ = false};
+    .err_tol_ = 1.0, .dvt_tol_ = 3.0, .jump_time_ = 50, .exit_on_overshoot_ = false};

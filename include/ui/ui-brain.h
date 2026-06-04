@@ -6,7 +6,7 @@
 enum class Interface { OPTIONS, AUTON, MOTORS, DEVICES, INFO, PARAMS };
 extern Interface current_interface;
 
-enum class PIDParamSet { REACH, TRACE };
+enum class PIDParamSet { REACH45, REACH90, REACH135, TRACE };
 extern PIDParamSet current_param_set;
 
 void setInterface(Interface interface);
