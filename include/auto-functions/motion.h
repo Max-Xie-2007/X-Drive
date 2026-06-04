@@ -44,7 +44,7 @@ void reach(const Point& target_pos, double target_heading, int time_limit = 2000
  * @param angular_ec 旋转退出条件
  */
 void traceWithGlobalHeading(
-    const Segment& path, double target_heading, int time_limit = 2000,
+    const Segment& path, double target_heading, int time_limit = 3000,
     const TraceCfg& trace_cfg = default_trace_cfg,
     const PIDParam translational_pid = default_trace_translational,
     const PIDParam angular_pid = default_trace_angular,
@@ -65,7 +65,7 @@ void traceWithGlobalHeading(
  * @param angular_ec 旋转退出条件
  */
 void traceWithGlobalHeading(
-    const Arc& path, double target_heading, int time_limit = 2000,
+    const Arc& path, double target_heading, int time_limit = 3000,
     const TraceCfg& trace_cfg = default_trace_cfg,
     const PIDParam translational_pid = default_trace_translational,
     const PIDParam angular_pid = default_trace_angular,
@@ -88,7 +88,7 @@ void traceWithGlobalHeading(
  */
 void traceWithRelativeHeading(
     const Segment& path, double terminal_target_heading, double target_heading_offset = 0.0,
-    int time_limit = 2000, const TraceCfg& trace_cfg = default_trace_cfg,
+    int time_limit = 3000, const TraceCfg& trace_cfg = default_trace_cfg,
     const PIDParam translational_pid = default_trace_translational,
     const PIDParam angular_pid = default_trace_angular,
     const PIDParam deviational_pid = default_trace_deviational,
@@ -110,7 +110,7 @@ void traceWithRelativeHeading(
  */
 void traceWithRelativeHeading(
     const Arc& path, double terminal_target_heading, double target_heading_offset = 0.0,
-    int time_limit = 2000, const TraceCfg& trace_cfg = default_trace_cfg,
+    int time_limit = 3000, const TraceCfg& trace_cfg = default_trace_cfg,
     const PIDParam translational_pid = default_trace_translational,
     const PIDParam angular_pid = default_trace_angular,
     const PIDParam deviational_pid = default_trace_deviational,

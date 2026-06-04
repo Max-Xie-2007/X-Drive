@@ -86,6 +86,9 @@ void traceWithGlobalHeading(const Segment& path, double target_heading, int time
         if (translational_ec.reached() && angular_ec.reached()) {
             break;
         }
+        if (close && translational_ec_opt.exit_on_overshoot_) {
+            break;
+        }
 
         // calculate outputs
         PID_deviational.update(deviational_error);
@@ -210,6 +213,9 @@ void traceWithGlobalHeading(const Arc& path, double target_heading, int time_lim
         translational_ec.update(translational_error, translational_dvt);
         angular_ec.update(angular_error, angular_dvt);
         if (translational_ec.reached() && angular_ec.reached()) {
+            break;
+        }
+        if (close && translational_ec_opt.exit_on_overshoot_) {
             break;
         }
 

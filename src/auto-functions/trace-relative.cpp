@@ -111,6 +111,9 @@ void traceWithRelativeHeading(const Segment& path, double terminal_target_headin
         if (translational_ec.reached() && angular_ec.reached()) {
             break;
         }
+        if (close && translational_ec_opt.exit_on_overshoot_) {
+            break;
+        }
 
         // calculate outputs
         PID_deviational.update(deviational_error);
@@ -260,6 +263,9 @@ void traceWithRelativeHeading(const Arc& path, double terminal_target_heading,
         translational_ec.update(translational_error, translational_dvt);
         angular_ec.update(angular_error, angular_dvt);
         if (translational_ec.reached() && angular_ec.reached()) {
+            break;
+        }
+        if (close && translational_ec_opt.exit_on_overshoot_) {
             break;
         }
 
