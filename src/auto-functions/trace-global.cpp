@@ -178,7 +178,7 @@ void traceWithGlobalHeading(const Arc& path, double target_heading, int time_lim
     if (trace_cfg.look_ahead_dist < translational_ec_opt.err_tol_) {
         // prevent look-ahead distance from being smaller than translational error
         // tolerance, which would cause the robot to stop right at the start
-        translational_ec.err_tol_ = trace_cfg.look_ahead_dist - 0.5;
+        translational_ec.err_tol_ = trace_cfg.look_ahead_dist / 2;
     }
 
     // loop

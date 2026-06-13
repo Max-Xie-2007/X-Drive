@@ -121,7 +121,7 @@ void driverControl() {
                     chassisControl();
                     chassisDebug();
                     calibration4Debug();
-                    // pistonControl();
+                    pistonControl();
                     break;
                 default:
                     break;
@@ -141,9 +141,9 @@ void chassisControl() {
 }
 
 void pistonControl() {
-    if (R1) {
+    if (L1) {
         stopPainting();
-    } else if (R2) {
+    } else if (L2) {
         startPainting();
     }
 }

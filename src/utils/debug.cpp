@@ -6,6 +6,7 @@
 #include "driver-control.h"
 #include "params.h"
 #include "robot-config.h"
+#include "subsystem/painter.h"
 #include "ui/ui-brain.h"
 #include "ui/ui-controller.h"
 #include "vex.h"
@@ -52,59 +53,136 @@ void squareCirc() {
     traceWithGlobalHeading(path8, 0.0);
 }
 
+const Point p1(0, 0);
+const Point p2(5.85, 18);
+const Point p3(-9.45, 6.85);
+const Point p4(9.45, 6.85);
+const Point p5(-5.85, 18);
+
 void pentagram() {
-    myPosition.reset(Point(0, 0));
-    const Segment path1(Point(0, 0), Point(8, 24));
-    const Segment path2(Point(8, 24), Point(-16, 8));
-    const Segment path3(Point(-16, 8), Point(16, 8));
-    const Segment path4(Point(16, 8), Point(-8, 24));
-    const Segment path5(Point(-8, 24), Point(0, 0));
-    traceWithGlobalHeading(path1, 0.0);
-    traceWithGlobalHeading(path2, 0.0);
-    traceWithGlobalHeading(path3, 0.0);
-    traceWithGlobalHeading(path4, 0.0);
-    traceWithGlobalHeading(path5, 0.0);
+    startPainting();
+    const Segment path1(p1, p2);
+    const Segment path2(p2, p3);
+    const Segment path3(p3, p4);
+    const Segment path4(p4, p5);
+    const Segment path5(p5, p1);
+    traceWithGlobalHeading(path1, 0.0, 3000, {.max_translational_speed = 20});
+    traceWithGlobalHeading(path2, 0.0, 3000, {.max_translational_speed = 20});
+    traceWithGlobalHeading(path3, 0.0, 3000, {.max_translational_speed = 20});
+    traceWithGlobalHeading(path4, 0.0, 3000, {.max_translational_speed = 20});
+    traceWithGlobalHeading(path5, 0.0, 3000, {.max_translational_speed = 20});
+    stopPainting();
+}
+
+void pentagon() {
+    startPainting();
+    const Segment path1(p1, p4);
+    const Segment path2(p4, p2);
+    const Segment path3(p2, p5);
+    const Segment path4(p5, p3);
+    const Segment path5(p3, p1);
+    traceWithGlobalHeading(path1, 0.0, 3000, {.max_translational_speed = 20});
+    traceWithGlobalHeading(path2, 0.0, 3000, {.max_translational_speed = 20});
+    traceWithGlobalHeading(path3, 0.0, 3000, {.max_translational_speed = 20});
+    traceWithGlobalHeading(path4, 0.0, 3000, {.max_translational_speed = 20});
+    traceWithGlobalHeading(path5, 0.0, 3000, {.max_translational_speed = 20});
+    stopPainting();
+}
+
+void circle() {
+    startPainting();
+    const Arc path1(p1, p4, 9.93, false, false);
+    const Arc path2(p4, p2, 9.93, false, false);
+    const Arc path3(p2, p5, 9.93, false, false);
+    const Arc path4(p5, p3, 9.93, false, false);
+    const Arc path5(p3, p1, 9.93, false, false);
+    traceWithGlobalHeading(path1, 0.0, 3000,
+                           {.max_translational_speed = 20, .look_ahead_dist = 2},
+                           {.kP_ = 40.0}, default_trace_angular,
+                           {.kP_ = 20.0}, {.err_tol_ = 0.5});
+    traceWithGlobalHeading(path2, 0.0, 3000,
+                           {.max_translational_speed = 20, .look_ahead_dist = 2},
+                           {.kP_ = 40.0}, default_trace_angular,
+                           {.kP_ = 20.0}, {.err_tol_ = 0.5});
+    traceWithGlobalHeading(path3, 0.0, 3000,
+                           {.max_translational_speed = 20, .look_ahead_dist = 2},
+                           {.kP_ = 40.0}, default_trace_angular,
+                           {.kP_ = 20.0}, {.err_tol_ = 0.5});
+    traceWithGlobalHeading(path4, 0.0, 3000,
+                           {.max_translational_speed = 20, .look_ahead_dist = 2},
+                           {.kP_ = 40.0}, default_trace_angular,
+                           {.kP_ = 20.0}, {.err_tol_ = 0.5});
+    traceWithGlobalHeading(path5, 0.0, 3000,
+                           {.max_translational_speed = 20, .look_ahead_dist = 2},
+                           {.kP_ = 40.0}, default_trace_angular,
+                           {.kP_ = 20.0}, {.err_tol_ = 0.5});
+    stopPainting();
+}
+
+void leftArrow() {
+    startPainting();
+    const float scalar = 2.0;
+    const Segment path1(Point(0, 0), Point(3 * scalar, 0));
+    const Segment path2(Point(3 * scalar, 0), Point(3 * scalar, 10 * scalar));
+    const Arc path3(Point(3 * scalar, 10 * scalar), Point(-2 * scalar, 15 * scalar),
+                    5 * scalar, false, false);
+    const Segment path4(Point(-2 * scalar, 15 * scalar), Point(-4 * scalar, 15 * scalar));
+    const Segment path5(Point(-4 * scalar, 15 * scalar), Point(-4 * scalar, 18 * scalar));
+    const Segment path6(Point(-4 * scalar, 18 * scalar),
+                        Point(-7 * scalar, 13.5 * scalar));
+    const Segment path7(Point(-7 * scalar, 13.5 * scalar),
+                        Point(-4 * scalar, 9 * scalar));
+    const Segment path8(Point(-4 * scalar, 9 * scalar), Point(-4 * scalar, 12 * scalar));
+    const Segment path9(Point(-4 * scalar, 12 * scalar), Point(-2 * scalar, 12 * scalar));
+    const Arc path10(Point(-2 * scalar, 12 * scalar), Point(0, 10 * scalar), 2 * scalar,
+                     true, false);
+    const Segment path11(Point(0, 10 * scalar), Point(0, 0));
+    traceWithGlobalHeading(path1, 0.0, 3000, {.max_translational_speed = 20});
+    traceWithGlobalHeading(path2, 0.0, 3000, {.max_translational_speed = 20});
+    traceWithGlobalHeading(path3, 0.0, 3000,
+                           {.max_translational_speed = 20, .look_ahead_dist = 2},
+                           {.kP_ = 40.0}, default_trace_angular,
+                           {.kP_ = 20.0}, {.err_tol_ = 0.5});
+    traceWithGlobalHeading(path4, 0.0, 3000, {.max_translational_speed = 20});
+    traceWithGlobalHeading(path5, 0.0, 3000, {.max_translational_speed = 20});
+    traceWithGlobalHeading(path6, 0.0, 3000, {.max_translational_speed = 20});
+    traceWithGlobalHeading(path7, 0.0, 3000, {.max_translational_speed = 20});
+    traceWithGlobalHeading(path8, 0.0, 3000, {.max_translational_speed = 20});
+    traceWithGlobalHeading(path9, 0.0, 3000, {.max_translational_speed = 20});
+    traceWithGlobalHeading(path10, 0.0, 3000,
+                           {.is_terminal = false, .max_translational_speed = 20, .look_ahead_dist = 2},
+                           {.kP_ = 40.0}, default_trace_angular,
+                           default_trace_deviational, {.err_tol_ = 0.5, .exit_on_overshoot_ = true});
+    traceWithGlobalHeading(path11, 0.0, 4000, {.max_translational_speed = 20});
+    stopPainting();
 }
 
 void chassisDebug() {
     if (X) {
-        reach(myPosition.getCenterPos() + Vector(0, 24), 0.0);
+        pentagon();
     }
     if (B) {
-        reach(myPosition.getCenterPos() + Vector(0, -24), 0.0);
+        pentagram();
     }
     if (Y) {
-        reach(myPosition.getCenterPos() + Vector(-24, 0), 0.0);
+        circle();
     }
     if (A) {
-        reach(myPosition.getCenterPos() + Vector(24, 0), 0.0);
     }
     if (Left) {
-        reach(myPosition.getCenterPos(), myPosition.getHeading() + 45.0, 2000,
-              default_reach_cfg, default_reach_translational, default_reach_angular_45);
+        leftArrow();
     }
     if (Right) {
-        reach(myPosition.getCenterPos(), myPosition.getHeading() - 45.0, 2000,
-              default_reach_cfg, default_reach_translational, default_reach_angular_45);
     }
     if (L1) {
-        reach(myPosition.getCenterPos(), myPosition.getHeading() + 90.0, 2000,
-              default_reach_cfg, default_reach_translational, default_reach_angular_90);
-    }
-    if (R1) {
-        reach(myPosition.getCenterPos(), myPosition.getHeading() - 90.0, 2000,
-              default_reach_cfg, default_reach_translational, default_reach_angular_90);
-    }
-    if (R2) {
-        reach(myPosition.getCenterPos(), myPosition.getHeading() + 135.0, 2000,
-              default_reach_cfg, default_reach_translational, default_reach_angular_135);
     }
     if (L2) {
-        reach(myPosition.getCenterPos(), myPosition.getHeading() - 135.0, 2000,
-              default_reach_cfg, default_reach_translational, default_reach_angular_135);
+    }
+    if (R1) {
+    }
+    if (R2) {
     }
     if (Down) {
-        pentagram();
     }
 }
 
